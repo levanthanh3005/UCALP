@@ -1,14 +1,14 @@
 angular.module('leth.controllers', [])
-.controller('AppCtrl', function ($ionicHistory, $interval, $scope, $rootScope, $ionicModal,  $cordovaDeviceMotion, $ionicPlatform, 
-                                $ionicPopup, $ionicTabsDelegate, $timeout, $cordovaBarcodeScanner, $state, 
-                                $ionicActionSheet, $cordovaEmailComposer, $cordovaContacts, $q, $ionicLoading, 
+.controller('AppCtrl', function ($ionicHistory, $interval, $scope, $rootScope, $ionicModal,  $cordovaDeviceMotion, $ionicPlatform,
+                                $ionicPopup, $ionicTabsDelegate, $timeout, $cordovaBarcodeScanner, $state,
+                                $ionicActionSheet, $cordovaEmailComposer, $cordovaContacts, $q, $ionicLoading,
                                 $ionicLoadingConfig, $location, $sce, $lockScreen, $cordovaInAppBrowser,$cordovaLocalNotification,
                                 $cordovaBadge,$ionicScrollDelegate, $ionicListDelegate, $cordovaClipboard, $cordovaVibration,
                                 AppService, Chat, PasswordPopup, Transactions, Friends, ExchangeService, Geolocation, FeedService, nfcService, SwarmService) {
-  
+
   window.refresh = function () {
     $ionicLoading.show();
-    if($scope.idCoin==0 || $scope.idCoin==undefined)  //buggy from wallet refresh  
+    if($scope.idCoin==0 || $scope.idCoin==undefined)  //buggy from wallet refresh
       $scope.balance = AppService.balance($scope.unit);
     else
       $scope.balance = AppService.balanceOf($scope.contractCoin,$scope.unit + 'e+' + $scope.decimals);
@@ -32,6 +32,24 @@ angular.module('leth.controllers', [])
 
     $timeout(function() {$ionicLoading.hide();}, 1000);
   };
+  $scope.addDefaultUCAL = function(){
+    // console.log("Run in controller");
+    console.log("$scope.listCoins.length:"+$scope.listCoins.length);
+    if ($scope.listCoins.length==0){
+      var UcalToken = {
+"name" : "UCAL",
+"company" : "UCAL",
+"logo" : "http://www.blockchain.srl/logoUCAL.jpg",
+"Network" : "Ropsten",
+"symbol" : "Ա",
+"decimals" : "6",
+"abstract" : "UCAL",
+"address" : "0x89da6ea5a070b34d56edd15aa66db79950b2ccba",
+"ABI" : "[ { \"constant\": false, \"inputs\": [ { \"name\": \"newSellPrice\", \"type\": \"uint256\" }, { \"name\": \"newBuyPrice\", \"type\": \"uint256\" } ], \"name\": \"setPrices\", \"outputs\": [], \"payable\": false, \"type\": \"function\" }, { \"constant\": true, \"inputs\": [], \"name\": \"name\", \"outputs\": [ { \"name\": \"\", \"type\": \"string\", \"value\": \"UCAL\" } ], \"payable\": false, \"type\": \"function\" }, { \"constant\": false, \"inputs\": [ { \"name\": \"_spender\", \"type\": \"address\" }, { \"name\": \"_value\", \"type\": \"uint256\" } ], \"name\": \"approve\", \"outputs\": [ { \"name\": \"success\", \"type\": \"bool\" } ], \"payable\": false, \"type\": \"function\" }, { \"constant\": true, \"inputs\": [], \"name\": \"totalSupply\", \"outputs\": [ { \"name\": \"\", \"type\": \"uint256\", \"value\": \"0\" } ], \"payable\": false, \"type\": \"function\" }, { \"constant\": false, \"inputs\": [ { \"name\": \"_from\", \"type\": \"address\" }, { \"name\": \"_to\", \"type\": \"address\" }, { \"name\": \"_value\", \"type\": \"uint256\" } ], \"name\": \"transferFrom\", \"outputs\": [ { \"name\": \"success\", \"type\": \"bool\" } ], \"payable\": false, \"type\": \"function\" }, { \"constant\": true, \"inputs\": [], \"name\": \"decimals\", \"outputs\": [ { \"name\": \"\", \"type\": \"uint8\", \"value\": \"6\" } ], \"payable\": false, \"type\": \"function\" }, { \"constant\": true, \"inputs\": [], \"name\": \"sellPrice\", \"outputs\": [ { \"name\": \"\", \"type\": \"uint256\", \"value\": \"0\" } ], \"payable\": false, \"type\": \"function\" }, { \"constant\": true, \"inputs\": [], \"name\": \"standard\", \"outputs\": [ { \"name\": \"\", \"type\": \"string\", \"value\": \"Token 0.1\" } ], \"payable\": false, \"type\": \"function\" }, { \"constant\": true, \"inputs\": [ { \"name\": \"\", \"type\": \"address\" } ], \"name\": \"balanceOf\", \"outputs\": [ { \"name\": \"\", \"type\": \"uint256\", \"value\": \"0\" } ], \"payable\": false, \"type\": \"function\" }, { \"constant\": false, \"inputs\": [ { \"name\": \"target\", \"type\": \"address\" }, { \"name\": \"mintedAmount\", \"type\": \"uint256\" } ], \"name\": \"mintToken\", \"outputs\": [], \"payable\": false, \"type\": \"function\" }, { \"constant\": true, \"inputs\": [], \"name\": \"buyPrice\", \"outputs\": [ { \"name\": \"\", \"type\": \"uint256\", \"value\": \"0\" } ], \"payable\": false, \"type\": \"function\" }, { \"constant\": true, \"inputs\": [], \"name\": \"owner\", \"outputs\": [ { \"name\": \"\", \"type\": \"address\", \"value\": \"0x9eec23085786333a81e88ea02d9eabb9735ba0ab\" } ], \"payable\": false, \"type\": \"function\" }, { \"constant\": true, \"inputs\": [], \"name\": \"symbol\", \"outputs\": [ { \"name\": \"\", \"type\": \"string\", \"value\": \"Ա\" } ], \"payable\": false, \"type\": \"function\" }, { \"constant\": false, \"inputs\": [], \"name\": \"buy\", \"outputs\": [], \"payable\": true, \"type\": \"function\" }, { \"constant\": false, \"inputs\": [ { \"name\": \"_to\", \"type\": \"address\" }, { \"name\": \"_value\", \"type\": \"uint256\" } ], \"name\": \"transfer\", \"outputs\": [], \"payable\": false, \"type\": \"function\" }, { \"constant\": true, \"inputs\": [ { \"name\": \"\", \"type\": \"address\" } ], \"name\": \"frozenAccount\", \"outputs\": [ { \"name\": \"\", \"type\": \"bool\", \"value\": false } ], \"payable\": false, \"type\": \"function\" }, { \"constant\": false, \"inputs\": [ { \"name\": \"_spender\", \"type\": \"address\" }, { \"name\": \"_value\", \"type\": \"uint256\" }, { \"name\": \"_extraData\", \"type\": \"bytes\" } ], \"name\": \"approveAndCall\", \"outputs\": [ { \"name\": \"success\", \"type\": \"bool\" } ], \"payable\": false, \"type\": \"function\" }, { \"constant\": true, \"inputs\": [ { \"name\": \"\", \"type\": \"address\" }, { \"name\": \"\", \"type\": \"address\" } ], \"name\": \"allowance\", \"outputs\": [ { \"name\": \"\", \"type\": \"uint256\", \"value\": \"0\" } ], \"payable\": false, \"type\": \"function\" }, { \"constant\": false, \"inputs\": [ { \"name\": \"amount\", \"type\": \"uint256\" } ], \"name\": \"sell\", \"outputs\": [], \"payable\": false, \"type\": \"function\" }, { \"constant\": false, \"inputs\": [ { \"name\": \"target\", \"type\": \"address\" }, { \"name\": \"freeze\", \"type\": \"bool\" } ], \"name\": \"freezeAccount\", \"outputs\": [], \"payable\": false, \"type\": \"function\" }, { \"constant\": false, \"inputs\": [ { \"name\": \"newOwner\", \"type\": \"address\" } ], \"name\": \"transferOwnership\", \"outputs\": [], \"payable\": false, \"type\": \"function\" }, { \"inputs\": [ { \"name\": \"initialSupply\", \"type\": \"uint256\", \"index\": 0, \"typeShort\": \"uint\", \"bits\": \"256\", \"displayName\": \"initial Supply\", \"template\": \"elements_input_uint\", \"value\": \"1000000000000\" }, { \"name\": \"tokenName\", \"type\": \"string\", \"index\": 1, \"typeShort\": \"string\", \"bits\": \"\", \"displayName\": \"token Name\", \"template\": \"elements_input_string\", \"value\": \"UCAL\" }, { \"name\": \"decimalUnits\", \"type\": \"uint8\", \"index\": 2, \"typeShort\": \"uint\", \"bits\": \"8\", \"displayName\": \"decimal Units\", \"template\": \"elements_input_uint\", \"value\": \"2\" }, { \"name\": \"tokenSymbol\", \"type\": \"string\", \"index\": 3, \"typeShort\": \"string\", \"bits\": \"\", \"displayName\": \"token Symbol\", \"template\": \"elements_input_string\", \"value\": \"\" }, { \"name\": \"centralMinter\", \"type\": \"address\", \"index\": 4, \"typeShort\": \"address\", \"bits\": \"\", \"displayName\": \"central Minter\", \"template\": \"elements_input_address\", \"value\": \"\" } ], \"payable\": false, \"type\": \"constructor\" }, { \"payable\": false, \"type\": \"fallback\" }, { \"anonymous\": false, \"inputs\": [ { \"indexed\": false, \"name\": \"target\", \"type\": \"address\" }, { \"indexed\": false, \"name\": \"frozen\", \"type\": \"bool\" } ], \"name\": \"FrozenFunds\", \"type\": \"event\" }, { \"anonymous\": false, \"inputs\": [ { \"indexed\": true, \"name\": \"from\", \"type\": \"address\" }, { \"indexed\": true, \"name\": \"to\", \"type\": \"address\" }, { \"indexed\": false, \"name\": \"value\", \"type\": \"uint256\" } ], \"name\": \"Transfer\", \"type\": \"event\" } ]"
+};
+      $scope.addCustomToken(UcalToken);
+    }
+  }
 
   $scope.deployTest = function(greet){
     var param = ['ciaux'];
@@ -52,7 +70,7 @@ angular.module('leth.controllers', [])
 
   function keyboardShowHandler(e){
     //patch on open
-    
+
     if($ionicHistory.currentView().stateName== "tab.chats"){
       $scope.scrollTo('chatScroll','bottom');
       //$rootScope.hideTabs = 'tabs-item-hide';
@@ -68,15 +86,15 @@ angular.module('leth.controllers', [])
 
   }
 
-  window.addEventListener('native.keyboardshow', keyboardShowHandler);     
-  //window.addEventListener('native.keyboardhide', keyboardHideHandler);     
+  window.addEventListener('native.keyboardshow', keyboardShowHandler);
+  //window.addEventListener('native.keyboardhide', keyboardHideHandler);
 
-  
+
   var flushChats = function(){
     //Flush chat messages
     Chat.flush();
-    $scope.DMchats = Chat.findDM(); 
-    $scope.DAPPchats = Chat.findDAPP(); 
+    $scope.DMchats = Chat.findDM();
+    $scope.DAPPchats = Chat.findDAPP();
     $scope.chats = Chat.find();
   }
 
@@ -92,7 +110,7 @@ angular.module('leth.controllers', [])
   $scope.loadFriends = function(){
     $scope.friends = Friends.all();
   }
-  
+
   window.customPasswordProvider = function (callback) {
     var pw;
     PasswordPopup.open("Digit your wallet password", "unlock account to proceed").then(
@@ -118,7 +136,7 @@ angular.module('leth.controllers', [])
         pw = "";
       })
   };
-  
+
   /*
   FeedService.GetFeed().then(function(infoNews){
     $scope.listFeeds = infoNews;
@@ -128,7 +146,7 @@ angular.module('leth.controllers', [])
 
   $scope.openInEtherscan = function(addr){
     var pinUrl = "https://testnet.etherscan.io/address/" + addr;
-    
+
       var options = {
         location: 'yes',
         clearcache: 'yes',
@@ -150,7 +168,7 @@ angular.module('leth.controllers', [])
   var getSync = function(){
     if(!web3.currentProvider) return;
 
-    try {    
+    try {
         if(web3.eth.syncing)
           $scope.syncStatus = "icon ion-eye-disabled light";
         else
@@ -160,13 +178,13 @@ angular.module('leth.controllers', [])
     } catch (err) {
       var alertPopup = $ionicPopup.show({
         title: 'Error',
-        template: 'Something is wrong! <br/>' + err.message   
+        template: 'Something is wrong! <br/>' + err.message
       });
 
       alertPopup.then(function(res) {
          alertPopup.close();
       });
-    
+
       $timeout(function() {
          alertPopup.close(); //close the popup after x seconds for some reason
       }, 3000);
@@ -180,14 +198,14 @@ angular.module('leth.controllers', [])
       });
 
       alertPopup.then(function(res) {
-        
+
       });
   }
 
   $scope.readCategoryList = function(){
     AppService.getStoreCategories().then(function(response){
       $scope.listCategory = response;
-    }) 
+    })
   };
 
   $scope.readDappsList = function(){
@@ -200,9 +218,9 @@ angular.module('leth.controllers', [])
 
     AppService.getStoreApps().then(function(response){
       $scope.listApps = response;
-    }) 
+    })
 
-  }; 
+  };
 
   $scope.readCoinsList = function(){
     $scope.filterStoreCoins = 'button button-small button button-positive';
@@ -216,8 +234,8 @@ angular.module('leth.controllers', [])
 
     AppService.getStoreCoins().then(function(response){
       angular.merge($scope.listCoins,response);
-    }) 
-  };      
+    })
+  };
 
   $scope.readFeedsList = function(){
     $scope.filterStoreCoins = 'button button-small button-outline button-positive';
@@ -226,7 +244,7 @@ angular.module('leth.controllers', [])
     $scope.isDapp = false;
     $scope.isCoin = false;
     $scope.isFeed = true;
-  };  
+  };
 
   $scope.shareByChat = function (friend,payment) {
     Chat.sendCryptedPaymentReq("Please send me " + payment + " eth &#x1F4B8; !", payment, friend.addr,friend.idkey);
@@ -236,7 +254,7 @@ angular.module('leth.controllers', [])
  $scope.inviteFriend = function (friend,param) {
     Chat.sendInviteToDapp(param,friend.addr,friend.idkey);
     $ionicLoading.show({ template: "Done!", noBackdrop: true, duration: 2000 })
-    
+
   };
 
   $scope.readFeed = function(index){
@@ -340,7 +358,7 @@ angular.module('leth.controllers', [])
     var customToken = {
       "Name" : token.name,
       "GUID" : "C" + $scope.listCoins.length+1,
-      "Network" : $scope.nameNetwork, 
+      "Network" : $scope.nameNetwork,
       "Company" : token.company,
       "Logo" : token.logo,
       "Symbol" : token.symbol,
@@ -357,7 +375,7 @@ angular.module('leth.controllers', [])
 
     $scope.listCoins.push(customToken);
     localStorage.Coins = JSON.stringify($scope.listCoins);
-    
+
     $scope.closeTokenModal();
   };
 
@@ -372,11 +390,11 @@ angular.module('leth.controllers', [])
         $scope.listCoins.splice($scope.listCoins.indexOf(token),1);
         localStorage.Coins = JSON.stringify($scope.listCoins);
       }
-    
+
       $scope.readCoinsList();
       $ionicListDelegate.closeOptionButtons();
    });
-   
+
   }
 
   $scope.shareCustomToken = function (friend,token) {
@@ -415,12 +433,12 @@ angular.module('leth.controllers', [])
             ermsg='Not enabled on Device!'
           } else{
             ermsg = e;
-            $scope.nfcAvailable = false;        
+            $scope.nfcAvailable = false;
           }
-          if(!ermsg){   
+          if(!ermsg){
             var alertPopup = $ionicPopup.show({
               title: 'NFC Error',
-              template: ermsg   
+              template: ermsg
             });
 
             alertPopup.then(function(res) {
@@ -428,20 +446,20 @@ angular.module('leth.controllers', [])
             });
 
             $timeout(function() {
-               alertPopup.close(); 
+               alertPopup.close();
             }, 3000);
           }
         })
       }catch(e){
       }
     }, false);
-    
+
     return false;
   };
-  
+
 
   $scope.scanTo = function () {
-    //document.addEventListener("deviceready", function () {      
+    //document.addEventListener("deviceready", function () {
     $ionicPlatform.ready(function () {
       if($rootScope.deviceready){
         $cordovaBarcodeScanner
@@ -455,15 +473,15 @@ angular.module('leth.controllers', [])
             // An error occurred
             console.log('Error!' + error);
           });
-      //}, false); 
+      //}, false);
       }
-    });        
+    });
   };
 
   $scope.lat = "N/A";
   $scope.long = "";
 
-  $scope.geoWatch;    
+  $scope.geoWatch;
   /*
   $scope.watchLocation = function(){
     $scope.geoWatch = Geolocation.watchPosition();
@@ -484,7 +502,7 @@ angular.module('leth.controllers', [])
   */
 
   $scope.scanSesamo = function () {
-    document.addEventListener("deviceready", function () {      
+    document.addEventListener("deviceready", function () {
       $cordovaBarcodeScanner
         .scan()
         .then(function (barcodeData) {
@@ -498,7 +516,7 @@ angular.module('leth.controllers', [])
           // An error occurred
           console.log('Error!' + error);
         });
-    }, false);          
+    }, false);
   };
 
   $scope.getNetwork = function(){
@@ -508,25 +526,26 @@ angular.module('leth.controllers', [])
           switch(res.hash) {
             case '0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303':
               $scope.nameNetwork = 'Morden';
-              $scope.classNetwork = 'royal';                
+              $scope.classNetwork = 'royal';
               $scope.badgeNetwork = 'badge badge-royal';
               break;
             case '0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d':
               $scope.nameNetwork = 'Ropsten';
-              $scope.classNetwork = 'positive';                
+              $scope.classNetwork = 'positive';
               $scope.badgeNetwork = 'badge badge-positive';
               break;
             case '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3':
               $scope.nameNetwork = 'Mainet';
-              $scope.classNetwork = 'balanced';                
+              $scope.classNetwork = 'balanced';
               $scope.badgeNetwork = 'badge badge-balanced';
               break;
             default:
               $scope.nameNetwork = 'Private';
-              $scope.classNetwork = 'calm';                
-              $scope.badgeNetwork = 'badge badge-calm';              
+              $scope.classNetwork = 'calm';
+              $scope.badgeNetwork = 'badge badge-calm';
           }
         }
+        $scope.addDefaultUCAL();
       });
       getSync();
     } catch(err){
@@ -583,7 +602,7 @@ angular.module('leth.controllers', [])
 
 
   $scope.scanAddr = function () {
-    document.addEventListener("deviceready", function () {  
+    document.addEventListener("deviceready", function () {
      $cordovaBarcodeScanner
       .scan()
       .then(function (barcodeData) {
@@ -601,7 +620,7 @@ angular.module('leth.controllers', [])
     ionic.Platform.exitApp();
   };
 
-  $scope.createWallet = function (seed, password, code) { 
+  $scope.createWallet = function (seed, password, code) {
     if(!lightwallet.keystore.isSeedValid(seed)){
       var alertPopup = $ionicPopup.alert({
         title: 'Invalid Seed',
@@ -617,7 +636,7 @@ angular.module('leth.controllers', [])
       var usrInzhoop = {"addr":"0xd1324ada7e026211d0cacd90cae5777e340de948","idkey":"0xc34293fdf389d8d5c0dd852d0e858576d367342777a57347e2407f64b1446b1c","name":"inzhoop","icon":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAAgACADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD7M8D+B/8AhDPtv/E0+2fbPL/5YeXs2bv9o5zu/SuW/wCSM/8AUY/tj/t38ryv++92fN9sY754x/2kP2b/APhoP/hHf+Kz/sD+wPtf/MO+1ed5/k/9NU27fJ987u2OeW+LHxY/4ZK/sr/iQf8ACVf8JV5//L19h+zfZvL/ANiXfu+0f7ONnfPH5NkeZ/257arjcT9axGK5faYXk9n7X2d1D9+kow5IpVPdtzW5HdsvM8t/s72NLBUfY06PNyV+bn9nz2cv3bbc+dtw1vy35lax6D/yWb/qD/2P/wBvHm+b/wB8bceV75z2xz1PjjwP/wAJn9i/4mn2P7H5n/LDzN+/b/tDGNv614r8J/ix/wANa/2r/wASD/hFf+EV8j/l6+3faftPmf7EWzb9n/2s7+2Oep/Zv/Zv/wCGfP8AhIv+Kz/t/wDt/wCyf8w77L5Pked/01fdu872xt754M8zP+w/Y1cFifquIwvN7PC8ntPZe0sp/v2nGfPFup71+W/IrNBlmW/2j7aljaPtqdbl56/Nye05LuP7tNOHI0oaW5rczvc5b9sj4sf8Kv8A+EQ/4kH9p/2n/aH/AC9eT5fl/Z/9hs58z2xj3rz7/lH1/wBT7/wnv/cL+xfYf+//AJm/7Z/s7fL/AIt3HoP7ZHxY/wCFX/8ACIf8SD+0/wC0/wC0P+XryfL8v7P/ALDZz5ntjHvXlnwn+LH/AAtD+1f+JB/Zn9meR/y9ed5nmeZ/sLjHl++c+1fdcF5DHiThfAYPEV7UF7Xnpcvx/vJOPvpqUeWS5tHrs9D5ziPNZ5FnGKxdHD3m+S1Tn291J+6007p8u2m5pf8AKQX/AKkL/hAv+4p9t+3f9+PL2fY/9rd5n8O3n0H9jf4sf8LQ/wCEv/4kH9mf2Z/Z/wDy9ed5nmfaP9hcY8v3zn2ryz4sfFj/AIVf/ZX/ABIP7T/tPz/+XryfL8vy/wDYbOfM9sY969T/AGN/ix/wtD/hL/8AiQf2Z/Zn9n/8vXneZ5n2j/YXGPL9859qONMhjw3wvj8Hh696D9lyUuX4P3kXL323KXNJ82r02WgcO5rPPc4wuLrYe01z3qc+/utL3UklZLl213P/2Q==","unread":0}
       $scope.friends.push(usrInzhoop);
 
-      
+
       /*
       lightwallet.keystore.createVault({
         password: code,
@@ -666,7 +685,7 @@ angular.module('leth.controllers', [])
             local_keystore.generateNewEncryptionKeys(pw2DerivedKey, 1, hdPath);
             local_keystore.setDefaultHdDerivationPath(hdPath);
             local_keystore.passwordProvider = code; //customPasswordProvider;
-          
+
 
             AppService.setWeb3Provider(global_keystore);
 
@@ -704,7 +723,7 @@ angular.module('leth.controllers', [])
         local_keystore.setDefaultHdDerivationPath(hdPath);
         local_keystore.passwordProvider = code; //customPasswordProvider;
       });
- 
+
 
       lightwallet.keystore.deriveKeyFromPassword(password, function (err, pwDerivedKey) {
         if($scope.legacy){
@@ -712,7 +731,7 @@ angular.module('leth.controllers', [])
         }else{
           global_keystore = new lightwallet.keystore(seed, pwDerivedKey,hdPath2);
           var info={curve: 'secp256k1', purpose: 'sign'};
-          global_keystore.addHdDerivationPath(hdPath,pwDerivedKey,info);          
+          global_keystore.addHdDerivationPath(hdPath,pwDerivedKey,info);
         }
 
         global_keystore.generateNewAddress(pwDerivedKey, 1);
@@ -770,10 +789,10 @@ angular.module('leth.controllers', [])
   $scope.isFriend = function(address) {
     var res = Friends.get(address);
     if(address == AppService.account())
-        return "me" ; 
+        return "me" ;
     if(res==undefined)
       return "";
-    else         
+    else
       return res.name ;
   }
 
@@ -782,11 +801,11 @@ angular.module('leth.controllers', [])
       Friends.update(name,addr,idkey,comment);
     else
       Friends.add(name,addr,idkey,comment);
-    
-    $scope.closeSaveAddressModal(); 
+
+    $scope.closeSaveAddressModal();
     $scope.friends = Friends.all();
   };
-  
+
   console.log("status login: " + $rootScope.hasLogged)
 
   //shake start
@@ -796,7 +815,7 @@ angular.module('leth.controllers', [])
   $scope.shakeCounter=3;
 
   // watch Acceleration options
-  $scope.options = { 
+  $scope.options = {
       frequency: 500, // Measure every 100ms
       deviation : 30  // We'll use deviation to determine the shake event, best values in the range between 25 and 30
   };
@@ -807,14 +826,14 @@ angular.module('leth.controllers', [])
       z : null,
       timestamp : null
   }
-  // Previous measurements    
+  // Previous measurements
   $scope.previousMeasurements = {
       x : null,
       y : null,
       z : null,
       timestamp : null
-  }   
-  
+  }
+
   var hashCode = function(text) {
     var hash = 0, i, chr, len;
     if (text.length === 0) return hash;
@@ -826,28 +845,28 @@ angular.module('leth.controllers', [])
     return hash;
   };
 
-  var startWatching = function() { 
-    document.addEventListener("deviceready", function () {   
+  var startWatching = function() {
+    document.addEventListener("deviceready", function () {
       $scope.watch = $cordovaDeviceMotion.watchAcceleration($scope.options);
       $scope.watch.then(null, function(error) {
           console.log('Error');
       },function(result) {
-          // Set current data  
+          // Set current data
           $scope.measurements.x = result.x;
           $scope.measurements.y = result.y;
           $scope.measurements.z = result.z;
-          $scope.measurements.timestamp = result.timestamp;  
-          // Detecta shake  
-          detectShake(result);   
-      });   
+          $scope.measurements.timestamp = result.timestamp;
+          // Detecta shake
+          detectShake(result);
+      });
     });
-  };       
+  };
 
-  var stopWatching = function() {  
-      $scope.watch.clearWatch();      
-  }       
+  var stopWatching = function() {
+      $scope.watch.clearWatch();
+  }
 
-  var detectShake = function(result) {  
+  var detectShake = function(result) {
     var measurementsChange = {};
     // Calculate measurement change only if we have two sets of data, current and old
     if ($scope.previousMeasurements.x !== null) {
@@ -858,8 +877,8 @@ angular.module('leth.controllers', [])
 
     if (measurementsChange.x + measurementsChange.y + measurementsChange.z > $scope.options.deviation) {
         stopWatching();  // Stop watching because it will start triggering like hell
-        console.log('Shake detected'); 
-        $scope.classShake = "shakeit";       
+        console.log('Shake detected');
+        $scope.classShake = "shakeit";
         $scope.shakeCounter--;
 
         if ($scope.shakeCounter>0)
@@ -868,11 +887,11 @@ angular.module('leth.controllers', [])
         $scope.randomString+=result.x+result.y+result.z;
 
         // Clean previous measurements after succesfull shake detection, so we can do it next time
-        $scope.previousMeasurements = { 
-            x: null, 
-            y: null, 
+        $scope.previousMeasurements = {
+            x: null,
+            y: null,
             z: null
-        } 
+        }
 
        if($scope.shakeCounter==0){
           $scope.randomString = hashCode($scope.randomString);
@@ -880,7 +899,7 @@ angular.module('leth.controllers', [])
         }
 
     } else if (measurementsChange.x + measurementsChange.y + measurementsChange.z > $scope.options.deviation/2) {
-        $scope.classShake = "shakeit"; 
+        $scope.classShake = "shakeit";
         $scope.previousMeasurements = {
             x: result.x,
             y: result.y,
@@ -888,19 +907,19 @@ angular.module('leth.controllers', [])
         }
     } else {
       // On first measurements set it as the previous one
-      $scope.classShake = ""; 
+      $scope.classShake = "";
       $scope.previousMeasurements = {
           x: result.x,
           y: result.y,
           z: result.z
       }
-    }           
-  }        
+    }
+  }
 
   $scope.$on('$ionicView.beforeLeave', function(){
       if($scope.watch != undefined)
-        $scope.watch.clearWatch(); 
-  }); 
+        $scope.watch.clearWatch();
+  });
 
   var entropyModal;
   var createEntropyModal = function () {
@@ -989,12 +1008,12 @@ angular.module('leth.controllers', [])
 
   $scope.restoreLogin = function(seed){
     closeEntropyModal();
-    // restore keystore from seed 
+    // restore keystore from seed
     $scope.randomSeed = seed;
     createLoginModal();
   }
 
-  $scope.Login = function (seed, pw, cod) { 
+  $scope.Login = function (seed, pw, cod) {
     var err;
     if(!lightwallet.keystore.isSeedValid(seed))
       err = "Seed not valid <br/>";
@@ -1006,7 +1025,7 @@ angular.module('leth.controllers', [])
     if(err){
       var alertPopup = $ionicPopup.show({
         title: 'Error',
-        template: 'Invalid data! <br/>' + err   
+        template: 'Invalid data! <br/>' + err
       });
 
       alertPopup.then(function(res) {
@@ -1014,17 +1033,17 @@ angular.module('leth.controllers', [])
       });
 
       $timeout(function() {
-         alertPopup.close(); 
+         alertPopup.close();
       }, 3000);
 
     }else{
       $scope.createWallet(seed, pw, cod);
-      $scope.closeLoginModal();      
+      $scope.closeLoginModal();
     }
   };
 
   $scope.sendSeedByEmail = function(){
-    document.addEventListener("deviceready", function () {  
+    document.addEventListener("deviceready", function () {
       $cordovaEmailComposer.isAvailable().then(function() {
       var emailOpts = {
         to: [''],
@@ -1042,8 +1061,8 @@ angular.module('leth.controllers', [])
       }, function (error) {
         console.log("cordovaEmailComposer not available");
         return;
-      }); 
-    }, false);        
+      });
+    }, false);
   };
 
   $scope.installDapp = function(id) {
@@ -1057,7 +1076,7 @@ angular.module('leth.controllers', [])
       var templateName = dappToInstall.GUID + ".html";
       var templateContent ="";
 
-      $http.get(dappToInstall.TemplateUrl) 
+      $http.get(dappToInstall.TemplateUrl)
       .success(function(data){
         templateContent =  $sce.trustAsHtml(data);
 
@@ -1086,7 +1105,7 @@ angular.module('leth.controllers', [])
         }, function () {
         // not available
       });
-    }, false);  
+    }, false);
   }
 
   $scope.readDapp = function(filename){
@@ -1107,14 +1126,14 @@ angular.module('leth.controllers', [])
     }, false);
   }
   //init
-  $scope.friends = [];    
+  $scope.friends = [];
   $scope.transactions = Transactions.all();
   //$scope.fromStore(true);
   $scope.readFeedsList();
 
   $scope.currencies = ExchangeService.getCurrencies();
   $scope.xCoin = "XETH";
-  
+
   if($rootScope.hasLogged ){
     var ls = JSON.parse(localStorage.AppKeys);
     var ks = JSON.parse(localStorage.EncKeys);
@@ -1142,12 +1161,12 @@ angular.module('leth.controllers', [])
   */
   $scope.msgCounter = 0;
   $scope.DMCounter = 0;
-  $scope.DMchats = Chat.findDM(); 
-  $scope.DAPPchats = Chat.findDAPP(); 
-  $scope.chats = Chat.find(); 
+  $scope.DMchats = Chat.findDM();
+  $scope.DAPPchats = Chat.findDAPP();
+  $scope.chats = Chat.find();
 
   $scope.setBadge = function(value) {
-    document.addEventListener("deviceready",function() {    
+    document.addEventListener("deviceready",function() {
       $cordovaBadge.hasPermission().then(function(result) {
           $cordovaBadge.set(value);
       }, function(error) {
@@ -1157,7 +1176,7 @@ angular.module('leth.controllers', [])
   }
 
   $scope.increaseBadge = function() {
-    document.addEventListener("deviceready",function() {      
+    document.addEventListener("deviceready",function() {
       $cordovaBadge.hasPermission().then(function(result) {
           $cordovaBadge.increase();
       }, function(error) {
@@ -1167,7 +1186,7 @@ angular.module('leth.controllers', [])
   }
 
   $scope.clearBadge = function() {
-    document.addEventListener("deviceready",function() { 
+    document.addEventListener("deviceready",function() {
       $cordovaBadge.hasPermission().then(function(result) {
           $cordovaBadge.clear();
       }, function(error) {
@@ -1177,7 +1196,7 @@ angular.module('leth.controllers', [])
   }
 
   $scope.scheduleSingleNotification = function (title, text, id) {
-    document.addEventListener("deviceready", function () {        
+    document.addEventListener("deviceready", function () {
       $cordovaLocalNotification.schedule({
           id: id,
           //title: title,
@@ -1185,7 +1204,7 @@ angular.module('leth.controllers', [])
         }).then(function (result) {
           //console.log('Notification 1 triggered');
         });
-    }, false); 
+    }, false);
   };
 
   $scope.scrollTo = function(handle,where){
@@ -1226,7 +1245,7 @@ angular.module('leth.controllers', [])
       buttonClicked: function(index) {
         switch(this.buttons[index].index){
           case 1: //copy message
-            document.addEventListener("deviceready", function () {  
+            document.addEventListener("deviceready", function () {
               if(msg.image){
                 $cordovaClipboard.copy(msg.image).then(function () {
                   // success
@@ -1250,7 +1269,7 @@ angular.module('leth.controllers', [])
             break;
           case 4: // open location
             var pinUrl = "https://www.google.com/maps/place/" + msg.attach.latitude + "," + msg.attach.longitude
-      
+
             var options = {
               location: 'yes',
               clearcache: 'yes',
@@ -1274,7 +1293,7 @@ angular.module('leth.controllers', [])
           case 6: // install token
             var msgTxt = "<h2 class='text-center'>Custom Token " + msg.attach.token.Name + " Shared! </h2>";
             msgTxt += "<p class='text-center'><img height='100px' width='auto' src='" + msg.attach.token.Logo + "'/></p>";
-              
+
             var confirmPopup = $ionicPopup.confirm({
               title: 'Install Custom Token',
               template: 'A new Token shared with you!<br/>Do you want to add ' + msg.attach.token.Name + '?'
@@ -1303,7 +1322,7 @@ angular.module('leth.controllers', [])
 
   $scope.chooseDappAction = function(dapp){
     var buttonsOpt= [{ text: '<i class="icon ion-android-share-alt"></i> Invite a friend', index: 1 }];
-    
+
     var hideSheet = $ionicActionSheet.show({
       buttons: buttonsOpt,
       destructiveText: (ionic.Platform.isAndroid()?'<i class="icon ion-android-exit assertive"></i> ':'')+'Cancel',
@@ -1336,7 +1355,7 @@ angular.module('leth.controllers', [])
   $scope.$on('incomingMessage', function (e, payload) {
     if(!payload.to[0]){
       //public msg
-      if($ionicTabsDelegate.selectedIndex()==1) 
+      if($ionicTabsDelegate.selectedIndex()==1)
         $scope.scrollTo('chatScroll','bottom');
       else{
         if(payload.time > JSON.parse(localStorage.LastMsg).time){
@@ -1344,7 +1363,7 @@ angular.module('leth.controllers', [])
           localStorage.LastMsg = JSON.stringify({time: payload.time, hash: payload.hash});
         }
       }
-      $scope.vibrate(); 
+      $scope.vibrate();
     }
 
     if(payload.to[0] && payload.to[0]==AppService.account()){
@@ -1352,7 +1371,7 @@ angular.module('leth.controllers', [])
       if(!$scope.isFriend(payload.from)){
         Friends.add(payload.from,payload.from,payload.senderKey,payload.text);
       }
-      if($ionicHistory.currentView().stateName=='tab.friend' && 
+      if($ionicHistory.currentView().stateName=='tab.friend' &&
         $ionicHistory.currentView().stateParams.Friend == payload.from)
         $scope.scrollTo('chatDMScroll','bottom');
       else{
@@ -1370,11 +1389,11 @@ angular.module('leth.controllers', [])
         //Token.add(payload.attach);
 
       $scope.loadFriends();
-      $scope.vibrate(); 
+      $scope.vibrate();
     }
 
     if(!$scope.$$phase) {
-      $scope.$digest(); 
+      $scope.$digest();
     }
   });
 
@@ -1389,7 +1408,7 @@ angular.module('leth.controllers', [])
     }else
     console.log('backmode not activated');
 
-    
+
      // Called when background mode has been activated
     cordova.plugins.backgroundMode.onactivate = function() {
       console.log('backgroundMode activated');
@@ -1405,7 +1424,7 @@ angular.module('leth.controllers', [])
           toNotify=true;
         }
 
-        //console.log('in backgroundMode:' + msg);    
+        //console.log('in backgroundMode:' + msg);
         if(toNotify){
           $scope.scheduleSingleNotification(payload.from,msg,payload.hash);
           $scope.increaseBadge();
@@ -1434,20 +1453,20 @@ angular.module('leth.controllers', [])
 
   $scope.cancelAllNotifications = function () {
     $scope.msgCounter = 0;
-    document.addEventListener("deviceready", function () {        
+    document.addEventListener("deviceready", function () {
       $cordovaLocalNotification.cancelAll().then(function (result) {
             console.log('All Notification Canceled');
       });
-    }, false); 
+    }, false);
   };
 
   $scope.cancelDMNotifications = function () {
-    $scope.DMCounter = 0;      
-    document.addEventListener("deviceready", function () {        
+    $scope.DMCounter = 0;
+    document.addEventListener("deviceready", function () {
       $cordovaLocalNotification.cancelAll().then(function (result) {
             console.log('DM Notification Canceled');
       });
-    }, false); 
+    }, false);
   };
 
   //clear notification and badge on click (todo: add on open)
@@ -1456,7 +1475,7 @@ angular.module('leth.controllers', [])
       $scope.cancelAllNotifications();
       $scope.clearBadge();
     }
-  );     
+  );
 
 }) //fine AppCtrl
 .controller('TransactionCtrl', function ($scope, $stateParams, $ionicPopup, $ionicListDelegate, Transactions) {
@@ -1472,7 +1491,7 @@ angular.module('leth.controllers', [])
         t.block = res.blockNumber;
         Transactions.upd(t);
         $scope.transactions = Transactions.all();
-        $scope.$digest(); 
+        $scope.$digest();
       }
     });
 

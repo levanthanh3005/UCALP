@@ -1,6 +1,6 @@
 angular.module('leth.controllers')
-  .controller('WalletCtrl', function ($scope, $rootScope, $stateParams, $ionicLoading, $ionicModal, $state, 
-                                      $ionicPopup, $cordovaBarcodeScanner, $ionicActionSheet, 
+  .controller('WalletCtrl', function ($scope, $rootScope, $stateParams, $ionicLoading, $ionicModal, $state,
+                                      $ionicPopup, $cordovaBarcodeScanner, $ionicActionSheet,
                                       $timeout, AppService, Transactions,ExchangeService, Chat) {
     var TrueException = {};
     var FalseException = {};
@@ -12,7 +12,7 @@ angular.module('leth.controllers')
         $scope.descCoin = "Eth from main wallet";
         $scope.symbolCoin = "Ξ";
         $scope.decimals = "6";
-        $scope.xCoin = "XETH";        
+        $scope.xCoin = "XETH";
         $scope.listUnit = [
     			{multiplier: "1.0e18", unitName: "ether"},
     			{multiplier: "1.0e15", unitName: "finney"}
@@ -20,7 +20,7 @@ angular.module('leth.controllers')
     		];
         $scope.unit = $scope.listUnit[0].multiplier;
         $scope.balance = AppService.balance($scope.unit);
-        $scope.symbolFee = $scope.symbolCoin;        
+        $scope.symbolFee = $scope.symbolCoin;
       }
       else {
       	$scope.getNetwork();
@@ -30,14 +30,23 @@ angular.module('leth.controllers')
         $scope.descCoin = activeCoins[index-1].Abstract;
         $scope.symbolCoin = activeCoins[index-1].Symbol;
         $scope.decimals = activeCoins[index-1].Decimals;
-        $scope.xCoin = activeCoins[index-1].Exchange;          
+        $scope.xCoin = activeCoins[index-1].Exchange;
         $scope.methodSend = activeCoins[index-1].Send;
         $scope.contractCoin = web3.eth.contract(activeCoins[index-1].ABI).at(activeCoins[index-1].Address);
-    		$scope.listUnit = activeCoins[index-1].Units;
-        $scope.unit = $scope.listUnit[0].multiplier;
-        $scope.balance = AppService.balanceOf($scope.contractCoin,$scope.unit );
+        if ($scope.symbolCoin=="Ա"||$scope.symbolCoin=="Ucal"||$scope.symbolCoin=="Bacini") {
+          $scope.listUnit = [
+            {multiplier: "1", unitName: "Ucal"},
+            {multiplier: "0.000001", unitName: "Bacini"}
+          ];
+          $scope.unit = $scope.listUnit[0].multiplier;
+          $scope.balance = AppService.balanceOf($scope.contractCoin,$scope.unit + 'e+' + $scope.decimals);
+        } else {
+    		    $scope.listUnit = activeCoins[index-1].Units;
+            $scope.unit = $scope.listUnit[0].multiplier;
+            $scope.balance = AppService.balanceOf($scope.contractCoin,$scope.unit + 'e+' + $scope.decimals);
+        }
       }
-      
+
       updateExchange();
     }
 
@@ -53,11 +62,11 @@ angular.module('leth.controllers')
 
     $scope.$on('$ionicView.enter', function() {
       $rootScope.hideTabs = ''; //patch
-      if($scope.idCoin==0 || $scope.idCoin==undefined)    
+      if($scope.idCoin==0 || $scope.idCoin==undefined)
         $scope.balance = AppService.balance($scope.unit);
       else
         $scope.balance = AppService.balanceOf($scope.contractCoin,$scope.unit + 'e+' + $scope.decimals);
-    
+
       $scope.minFee = 371007000000000;
       $scope.maxFee = 11183211000000000;
       $scope.step = 344506500000000;
@@ -83,7 +92,7 @@ angular.module('leth.controllers')
       $scope.addrKey = idkey;
       $scope.amountTo = parseFloat(coins);
       $scope.fromAddressBook = true;
-    }else { 
+    }else {
       $scope.fromAddressBook = false;
     }
 
@@ -118,7 +127,7 @@ angular.module('leth.controllers')
               //save transaction
               var newT = {from: $scope.account, to: addr, id: result[1], value: value, unit: unit, symbol: $scope.symbolCoin, time: new Date().getTime()};
               $scope.transactions = Transactions.add(newT);
-              Chat.sendTransactionNote(newT);              
+              Chat.sendTransactionNote(newT);
               refresh();
             }
           },
@@ -155,13 +164,13 @@ angular.module('leth.controllers')
               });
               successPopup.then(function (res) {
                 $ionicLoading.hide();
-                
+
                 $state.go('tab.transall');
               });
               //save transaction
               var newT = {from: $scope.account, to: addr, id: result[1], value: value, unit: unit, symbol: $scope.symbolCoin, time: new Date().getTime()};
               $scope.transactions = Transactions.add(newT);
-              Chat.sendTransactionNote(newT);              
+              Chat.sendTransactionNote(newT);
               refresh();
             }
           },
@@ -185,7 +194,7 @@ angular.module('leth.controllers')
       if($scope.idCoin==0)
         unit = $scope.unit;
 
-        
+
 
       $scope.feeLabel = $scope.fee  / unit;
 
@@ -198,36 +207,40 @@ angular.module('leth.controllers')
       $scope.balance = AppService.balance(unt[0].multiplier);
       $scope.symbolCoin = unt[0].unitName;
       $scope.unit = unt[0].multiplier;
-  
+
       if($scope.idCoin==0){
         $scope.feeLabel = $scope.fee  / $scope.unit;
         $scope.symbolFee = $scope.symbolCoin;
+      } else if ($scope.symbolCoin=="Ա"||$scope.symbolCoin=="Ucal"||$scope.symbolCoin=="Bacini") {
+        $scope.balance = AppService.balanceOf($scope.contractCoin,$scope.unit + 'e+' + $scope.decimals);
       }
 
     }
 
     $scope.confirmSend = function (addr, amount,unit) {
       var total = parseFloat(amount);
-      var unit = $scope.unit;  
+      var unit = $scope.unit;
       if($scope.idCoin==0){
         var valueFee = parseFloat($scope.fee / unit);
         total = parseFloat(amount + valueFee) ;
       }
-
+      if ($scope.symbolCoin=="Ա"||$scope.symbolCoin=="Ucal"||$scope.symbolCoin=="Bacini") {
+        unit = $scope.unit+'e+' + $scope.decimals;
+      }
       var confirmPopup = $ionicPopup.confirm({
         title: 'Confirm payment',
         template: 'Send ' + total + " " + document.querySelector('#valuta option:checked').text + " to " + addr + " ?"
       });
       confirmPopup.then(function (res) {
         if (res) {
-          $scope.sendCoins(addr, amount,unit);
+          $scope.sendCoins(addr, amount,unit,$scope.idCoin);
         } else {
           $ionicLoading.hide();
           //console.log('send coins aborted');
         }
       });
     };
-    
+
     $scope.checkAddress = function (address) {
       try {
         angular.forEach(this.friends, function(value, key) {
@@ -250,7 +263,7 @@ angular.module('leth.controllers')
       $scope.fromAddressBook = false;
     }
 
-    $scope.chooseCoin = function(){  
+    $scope.chooseCoin = function(){
 		  //$scope.getNetwork();
       var buttonsGroup = [{text: '<span style="text-align:left"><img width="30px" heigth="30px" src="img/ethereum-icon.png"/> Ether [Ξ]</span>'}];
 
