@@ -5,7 +5,7 @@
       <ion-list class="list" can-swipe="true">
       <ion-item class="item item-divider item-avatar-left  item-icon-right item-avatar-right">
         <img ng-src="{{logoCoin}}" ng-click="scrollRefresh()"/>
-        <label id="{{idCoin}}"><b>{{balance | currency:symbolCoin+' ':6}} </b><span class="subdued" ">({{balanceExc}})</span></label>
+        <label id="{{idCoin}}"><b>{{balance | currency:symbolCoin+' ':unitRound}} </b><span class="subdued" ">({{balanceExc}})</span></label>
         <p>
           <label >{{descCoin}}</label>
         </p>
@@ -15,7 +15,7 @@
       </ion-list>
       <div class="item">
         <div class="item item-input item-stacked-label item-icon-right">
-          <span class="input-label">Address To 
+          <span class="input-label">Address To
           <i class="icon ion-ios-person-outline positive" ng-show="!addrTo.length" ng-click="openFriendsModal()"></i>
             <span class="" ng-show="isFriend(addrTo)">({{isFriend(addrTo) | strLimit: 20 : 5}})</span>
           </span>
@@ -34,17 +34,17 @@
             <input type="range" ng-model="fee"  min="{{minFee}}" max="{{maxFee}}" step="{{step}}" value="{{fee}}" ng-init="fee" ng-change="setFee(fee)">
           </div>
         </div>
-        <button ng-disabled="!unit || !amountTo>0 || !isValidAddr(addrTo)" class="button button-block button-energized" ng-click="confirmSend(addrTo,amountTo,unit,idCoin)"><i class="icon ion-paper-airplane"></i> Send 
+        <button ng-disabled="!unit || !amountTo>0 || !isValidAddr(addrTo)" class="button button-block button-energized" ng-click="confirmSend(addrTo,amountTo,unit,idCoin)"><i class="icon ion-paper-airplane"></i> Send
         </button>
-        </div> 
-        <div class="item tabs row"> 
-          <div class="col col-10"></div>         
+        </div>
+        <div class="item tabs row">
+          <div class="col col-10"></div>
           <div class="col col-30">
             <button class="button button-icon icon ion-ios-list-outline dark" ng-disabled="!transactions.length" ng-click="listTransaction()"> transactions</button>
           </div>
-          <div class="col col-30"></div>    
-          <div class="col col-30"></div>   
-        </div>    
+          <div class="col col-30"></div>
+          <div class="col col-30"></div>
+        </div>
     </div>
   </ion-content>
 </ion-view>

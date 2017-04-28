@@ -6,7 +6,7 @@
     <button class="button button-clear" ng-hide="transactions.length == 0" on-touch="deleteAllTransactions()">
       <i class="icon ion-ios-trash-outline"></i>
     </button>
-  </ion-nav-buttons>  
+  </ion-nav-buttons>
   <ion-header-bar align-title="left" class="bar-subheader">
     <label class="item-input label-inset">
       <i class="icon ion-search placeholder-icon"></i>
@@ -26,7 +26,7 @@
         <div ng-show="isFriend(t.from)">From: {{isFriend(t.from) | strLimit: 10 : 2}}</div>
         <div ng-hide="isFriend(t.to)">To: {{t.to | strLimit: 15 : 5}}</div>
         <div ng-show="isFriend(t.to)">To: {{isFriend(t.to) | strLimit: 10 : 2}}</div>
-        <div><h3>Amount: {{(t.value/ t.unit) | currency:t.symbol + " ":6}}</h3></div> 
+        <div><h3>Amount: {{(t.value/ t.unit) | currency:t.symbol + " ":t.unitRound}}</h3></div> 
         <ion-option-button ng-show="!t.block" class="button-positive" ng-click="checkStatus(t)">
           <i class="icon ion-ios-reload"></i>
         </ion-option-button>

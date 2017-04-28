@@ -14,9 +14,8 @@ angular.module('leth.controllers')
         $scope.decimals = "6";
         $scope.xCoin = "XETH";
         $scope.listUnit = [
-    			{multiplier: "1.0e18", unitName: "ether"},
-    			{multiplier: "1.0e15", unitName: "finney"}
-          //,{multiplier: "1.0e12",unitName: "szabo"}
+    			{multiplier: "1.0e18", unitName: "ether", unitIcon: "Ξ"},
+    			{multiplier: "1.0e15", unitName: "finney", unitIcon: "finney"}
     		];
         $scope.unit = $scope.listUnit[0].multiplier;
         $scope.balance = AppService.balance($scope.unit);
@@ -33,10 +32,10 @@ angular.module('leth.controllers')
         $scope.xCoin = activeCoins[index-1].Exchange;
         $scope.methodSend = activeCoins[index-1].Send;
         $scope.contractCoin = web3.eth.contract(activeCoins[index-1].ABI).at(activeCoins[index-1].Address);
-        if ($scope.symbolCoin=="Ա"||$scope.symbolCoin=="Ucal"||$scope.symbolCoin=="Bacini") {
+        if ($scope.symbolCoin=="Ա"||$scope.symbolCoin=="Ucal"||$scope.symbolCoin=="Bacini" || $scope.symbolCoin=="B") {
           $scope.listUnit = [
-            {multiplier: "1", unitName: "Ucal"},
-            {multiplier: "0.000001", unitName: "Bacini"}
+            {multiplier: "1", unitName: "Ucal", unitIcon : "Ա", unitRound:"6"},
+            {multiplier: "0.000001", unitName: "Bacini" , unitIcon: "B", unitRound:"0"}
           ];
           $scope.unit = $scope.listUnit[0].multiplier;
           $scope.balance = AppService.balanceOf($scope.contractCoin,$scope.unit + 'e+' + $scope.decimals);
@@ -46,7 +45,8 @@ angular.module('leth.controllers')
             $scope.balance = AppService.balanceOf($scope.contractCoin,$scope.unit + 'e+' + $scope.decimals);
         }
       }
-
+      console.log("listUnit size:"+$scope.listUnit.length+" "+$scope.unit);
+      $scope.unitRound = 6;
       updateExchange();
     }
 
@@ -125,7 +125,7 @@ angular.module('leth.controllers')
                 $state.go('tab.transall');
               });
               //save transaction
-              var newT = {from: $scope.account, to: addr, id: result[1], value: value, unit: unit, symbol: $scope.symbolCoin, time: new Date().getTime()};
+              var newT = {from: $scope.account, to: addr, id: result[1], value: value, unit: unit, symbol: $scope.symbolCoin,unitRound:$scope.unitRound, time: new Date().getTime()};
               $scope.transactions = Transactions.add(newT);
               Chat.sendTransactionNote(newT);
               refresh();
@@ -168,7 +168,7 @@ angular.module('leth.controllers')
                 $state.go('tab.transall');
               });
               //save transaction
-              var newT = {from: $scope.account, to: addr, id: result[1], value: value, unit: unit, symbol: $scope.symbolCoin, time: new Date().getTime()};
+              var newT = {from: $scope.account, to: addr, id: result[1], value: value, unit: unit, symbol: $scope.symbolCoin,unitRound:$scope.unitRound, time: new Date().getTime()};
               $scope.transactions = Transactions.add(newT);
               Chat.sendTransactionNote(newT);
               refresh();
@@ -205,16 +205,18 @@ angular.module('leth.controllers')
           return val;
       });
       $scope.balance = AppService.balance(unt[0].multiplier);
-      $scope.symbolCoin = unt[0].unitName;
+      $scope.symbolCoin = unt[0].unitIcon;
       $scope.unit = unt[0].multiplier;
 
       if($scope.idCoin==0){
         $scope.feeLabel = $scope.fee  / $scope.unit;
         $scope.symbolFee = $scope.symbolCoin;
-      } else if ($scope.symbolCoin=="Ա"||$scope.symbolCoin=="Ucal"||$scope.symbolCoin=="Bacini") {
+        $scope.unitRound = 6;
+      } else if ($scope.symbolCoin=="Ա"||$scope.symbolCoin=="Ucal"||$scope.symbolCoin=="Bacini" || $scope.symbolCoin=="B") {
         $scope.balance = AppService.balanceOf($scope.contractCoin,$scope.unit + 'e+' + $scope.decimals);
+        $scope.unitRound = unt[0].unitRound;
       }
-
+      console.log("balance:"+$scope.balance+"  "+$scope.listUnit.length);
     }
 
     $scope.confirmSend = function (addr, amount,unit) {
@@ -224,7 +226,7 @@ angular.module('leth.controllers')
         var valueFee = parseFloat($scope.fee / unit);
         total = parseFloat(amount + valueFee) ;
       }
-      if ($scope.symbolCoin=="Ա"||$scope.symbolCoin=="Ucal"||$scope.symbolCoin=="Bacini") {
+      if ($scope.symbolCoin=="Ա"||$scope.symbolCoin=="Ucal"||$scope.symbolCoin=="Bacini" || $scope.symbolCoin=="B") {
         unit = $scope.unit+'e+' + $scope.decimals;
       }
       var confirmPopup = $ionicPopup.confirm({
