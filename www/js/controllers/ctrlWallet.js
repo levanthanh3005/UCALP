@@ -49,7 +49,18 @@ angular.module('leth.controllers')
       $scope.unitRound = 6;
       updateExchange();
     }
-
+    var setDefaultsUCALCoin = function(){
+      // console.log("setDefaultsUCALCoin");
+      var activeCoins=$scope.listCoins.filter( function(obj) {return (obj.Network==$scope.nameNetwork) && (obj.Installed);} );
+       for (var i = 0; i < activeCoins.length; i++) {
+        //  console.log(">>>"+activeCoins[i].Name);
+         if (activeCoins[i].Name=="UCAL"){
+          //  console.log(">>>>index:"+i);
+           setCoin(i+1);
+           break;
+         }
+       }
+    }
     var updateExchange = function(){
       if($scope.xCoin){
         ExchangeService.getTicker($scope.xCoin, JSON.parse(localStorage.BaseCurrency).value).then(function(value){
@@ -78,7 +89,9 @@ angular.module('leth.controllers')
     })
 
     //set Eth for default
-    setCoin(0);
+    // setCoin(0);
+
+    setDefaultsUCALCoin();
 
     $scope.fromAddressBook = false;
 

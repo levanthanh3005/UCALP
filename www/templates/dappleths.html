@@ -1,25 +1,29 @@
-<ion-view view-title="LΞTH" can-swipe-back="false">
+<ion-view view-title="ԱCAL" can-swipe-back="false">
   <ion-content class="has-header has-tabs scrollBg" >
-    <ion-slide-box auto-play="true" does-continue="false" show-pager="true">
-      <ion-slide>
+    <!-- <ion-slide-box auto-play="true" does-continue="false" show-pager="true">
+      <ion-slide> -->
         <div>
-          <a href="#" onclick="window.open('https://www.inzhoop.com','_blank','location=yes','closebuttoncaption=Return');"><img src="img/banners/header1.png"  height="150" ng-click="nextSlide()"/></a>
+          <!-- <a href="#" onclick="window.open('https://www.inzhoop.com','_blank','location=yes','closebuttoncaption=Return');"> -->
+            <img src="img/logo_unical.png"  height="150"/>
+          <!-- </a> -->
         </div>
-      </ion-slide>
-      <ion-slide>
+      <!-- </ion-slide> -->
+      <!-- <ion-slide>
         <div>
-          <a href="#" onclick="window.open('https://www.inzhoop.com','_blank','location=yes','closebuttoncaption=Return');"><img src="img/banners/header2.png"  height="150" ng-click="nextSlide()"/></a>
+          <a href="#" onclick="window.open('https://www.inzhoop.com','_blank','location=yes','closebuttoncaption=Return');">
+            <img src="img/banners/unical.jpg"  height="150" ng-click="nextSlide()"/></a>
         </div>
-      </ion-slide>
-    </ion-slide-box>
+      </ion-slide> -->
+    <!-- </ion-slide-box> -->
     <div class="button-bar padding">
       <!--button class="{{filterFeed}}" ng-click="readFeedsList()">News </button-->
-      <button class="{{filterStoreCoins}}" ng-click="readCoinsList()">Tokens</button>
-      <button class="{{filterStoreApps}}" ng-click="readDappsList()">ÐAppleths</button>
+      <!-- <button class="{{filterStoreCoins}}" ng-click="readCoinsList()">Tokens</button> -->
+      <button class="{{filterStoreCoins}}" >Tokens</button>
+      <!-- <button class="{{filterStoreApps}}" ng-click="readDappsList()">ÐAppleths</button> -->
     </div>
-        
+
     <div class="categoryBox" ng-repeat="cat in listCategory | filter:{Network:nameNetwork}" ng-if="isDapp">
-      <div class="categoryHead">{{cat.Name}} 
+      <div class="categoryHead">{{cat.Name}}
         <span class="item-note">#{{cat.List.length}}</span>
       </div>
       <ul class="appSlider">
@@ -28,7 +32,7 @@
             <img class="appIco" ng-src="{{dapp.Logo}}"/>
             <h2 class="title">{{dapp.Name}}</h2>
             <p class="description">{{dapp.Description}}</p>
-            <h6 class="author">by {{dapp.Company}}</h6> 
+            <h6 class="author">by {{dapp.Company}}</h6>
           </a>
         </li>
       </ul>
@@ -41,7 +45,7 @@
           <img ng-src="{{dapp.Logo}}"/>
           <h2>{{dapp.Name}}</h2>
           <p>{{dapp.Description}}</p>
-          <h6>by {{dapp.Company}}</h6> 
+          <h6>by {{dapp.Company}}</h6>
           <i class="icon ion-chevron-right icon-accessory" ng-hide="flagApps"></i>
         </a>
       </ion-slide>
@@ -56,7 +60,7 @@
             <img ng-src="{{dapp.Logo}}"/>
             <h2>{{dapp.Name}}</h2>
             <p>{{dapp.Description}}</p>
-            <h6>by {{dapp.Company}}</h6> 
+            <h6>by {{dapp.Company}}</h6>
             </a>
           </div>
         </div>
@@ -70,8 +74,8 @@
             <h6>by {{dapp.Company}}</h6>
             <ion-spinner icon="crescent" class="icon spinner-positive" ng-show="isInstalling(dapp)"></ion-spinner>
             <i class="icon ion-chevron-right icon-accessory" ng-hide="flagApps"></i>
-            <i class="icon ion-ios-cloud-download-outline positive" ng-hide="!flagApps" ng-click="installDapp(dapp.GUID)"></i>  
-      </ion-item>  
+            <i class="icon ion-ios-cloud-download-outline positive" ng-hide="!flagApps" ng-click="installDapp(dapp.GUID)"></i>
+      </ion-item>
     </ion-list-->
     <ion-list ng-show="isCoin">
       <ion-item class="item item-avatar-left item-icon-right"  ng-repeat="coin in listCoins | filter:{Network:nameNetwork} track by $index" type="item-text-wrap" on-hold="showCustomTokenInfo(coin)">
@@ -80,10 +84,10 @@
             <p>{{coin.Abstract}}</p>
             <h6>by {{coin.Company}}</h6>
             <ion-spinner icon="ripple" class="icon spinner-positive" ng-show="coin.Progress"></ion-spinner>
-            <i class="icon ion-ios-checkmark-outline balanced" ng-hide="!coin.Installed || coin.Progress"></i>  
-            <i class="icon ion-ios-cloud-download-outline positive" ng-hide="coin.Installed || coin.Progress || coin.Custom" ng-click="installCoin(coin)"></i>  
-            <i class="icon ion-ios-circle-outline positive" ng-show="!coin.Installed && coin.Custom && !coin.Progress" ng-click="installCoin(coin)"></i> 
-            <!--style="display: inline-block !important; font-size: 12px; padding-top: 40px;"--> 
+            <i class="icon ion-ios-checkmark-outline balanced" ng-hide="!coin.Installed || coin.Progress"></i>
+            <i class="icon ion-ios-cloud-download-outline positive" ng-hide="coin.Installed || coin.Progress || coin.Custom" ng-click="installCoin(coin)"></i>
+            <i class="icon ion-ios-circle-outline positive" ng-show="!coin.Installed && coin.Custom && !coin.Progress" ng-click="installCoin(coin)"></i>
+            <!--style="display: inline-block !important; font-size: 12px; padding-top: 40px;"-->
             <ion-option-button style="padding-top: 40px; font-size: 12px;" class="button-energized" ng-show="coin.Custom" ng-click="openFriendsModal(coin)">
               <i class="icon ion-share"></i>
               <span>Share</span>
@@ -103,7 +107,7 @@
             <p>Add a custom token</p>
             <i class="icon ion-ios-plus-outline positive"></i>
       </ion-item>
-    </ion-list> 
+    </ion-list>
     <!--
      <ion-list ng-show="isFeed">
       <ion-item class="item-remove-animate item-icon-right" ng-repeat="info in listFeeds track by $index" ng-click="readFeed($index)">
@@ -115,14 +119,14 @@
         <ion-option-button class="button-assertive" ng-click="remove($index)">
             Delete
         </ion-option-button>
-      </ion-item> 
-      </ion-list> 
-        
+      </ion-item>
+      </ion-list>
+
       <swipe-cards ng-show="isFeed">
         <swipe-card ng-repeat="card in cards" on-destroy="cardDestroyed($index)" on-card-swipe="cardSwiped($index)">
-          <div class="card" >        
-            <div class="item item-divider item-energized"> 
-              Read now Ethereum news 
+          <div class="card" >
+            <div class="item item-divider item-energized">
+              Read now Ethereum news
               <span class="badge badge-assertive">{{listFeeds.length}}</span>
             </div>
             <div class="item item-text-wrap">
@@ -130,28 +134,26 @@
               <p>{{card.pubDate}}</p>
             </div>
             <div class="item item-divider item-stable">
-               <a class="icon button button-clear button-assertive" ng-click="earn({{card.id}})"><i class="ion-ios-pricetag"></i>  
+               <a class="icon button button-clear button-assertive" ng-click="earn({{card.id}})"><i class="ion-ios-pricetag"></i>
                 Read & Earn</a>
                 <a class="icon button button-clear button-stable" ng-click="cardDestroyed($index); cardSwiped($index)"><i class="ion-arrow-graph-down-left"></i> Swipe & Skip</a>
             </div>
-          </div> 
+          </div>
         </swipe-card>
         <swipe-card on-card-swipe="cardSwiped()" id="start-card">
-          <div class="card" >                
-            <div class="item item-divider item-energized"> 
+          <div class="card" >
+            <div class="item item-divider item-energized">
 
             </div>
-            <div class="item item-text-wrap">  
-              <h3>Swipe down cards, read and earn a revenue in coins! 
+            <div class="item item-text-wrap">
+              <h3>Swipe down cards, read and earn a revenue in coins!
               <i class="ion-arrow-graph-down-left"></i></h3>
             </div>
           </div>
         </swipe-card>
       </swipe-cards>
-     -->   
+     -->
     <div ng-bind-html="appContainer">
     </div>
     </ion-content>
 </ion-view>
-
-

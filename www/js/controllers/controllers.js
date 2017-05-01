@@ -326,7 +326,8 @@ angular.module('leth.controllers', [])
     }
     if($ionicHistory.currentTitle()=="Address")
       $scope.shareByChat(friend, $scope.param);
-    if($ionicHistory.currentTitle()=="LΞTH")
+    // if($ionicHistory.currentTitle()=="LΞTH")
+    if($ionicHistory.currentTitle()=="ԱCAL")
       $scope.shareCustomToken(friend, $scope.param);
     if($ionicHistory.currentView().stateName == "tab.dappleth-run"){
       if($scope.param.action=="invite")
