@@ -89,7 +89,7 @@ angular.module('leth.controllers')
     })
 
     //set Eth for default
-    // setCoin(0);
+    setCoin(0);
 
     setDefaultsUCALCoin();
 
@@ -140,7 +140,7 @@ angular.module('leth.controllers')
               //save transaction
               var newT = {from: $scope.account, to: addr, id: result[1], value: value, unit: unit, symbol: $scope.symbolCoin,unitRound:$scope.unitRound, time: new Date().getTime()};
               $scope.transactions = Transactions.add(newT);
-              Chat.sendTransactionNote(newT);
+              // Chat.sendTransactionNote(newT);
               refresh();
             }
           },
@@ -183,7 +183,7 @@ angular.module('leth.controllers')
               //save transaction
               var newT = {from: $scope.account, to: addr, id: result[1], value: value, unit: unit, symbol: $scope.symbolCoin,unitRound:$scope.unitRound, time: new Date().getTime()};
               $scope.transactions = Transactions.add(newT);
-              Chat.sendTransactionNote(newT);
+              // Chat.sendTransactionNote(newT);
               refresh();
             }
           },
