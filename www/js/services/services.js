@@ -35,7 +35,7 @@ angular.module('leth.services', [])
       $window.localStorage.removeItem(guid + "_" + key);
     }
   }
-})                
+})
 
 .service('AppService', function ($rootScope, $http, $q, StoreEndpoint) {
   var network;
@@ -110,7 +110,7 @@ angular.module('leth.services', [])
         q.reject(response);
       });
       return q.promise;
-    },    
+    },
     setWeb3Provider: function (keys) {
       var web3Provider = new HookedWeb3Provider({
         host: localStorage.NodeHost,
@@ -177,7 +177,7 @@ angular.module('leth.services', [])
         } catch (e) {
             reject(e);
           }
-        }); 
+        });
     },
     deployContract: function (datacode, gasValue) {
       return $q(function (resolve, reject) {
@@ -200,7 +200,7 @@ angular.module('leth.services', [])
           } catch (e) {
             reject(e);
           }
-        }); 
+        });
     },
     contractNew: function (params, abi, datacode, gasLimit, fee) {
       var fromAddr = global_keystore.getAddresses()[0];
@@ -208,9 +208,9 @@ angular.module('leth.services', [])
       var contract = web3.eth.contract(abi);
       var gasPrice = web3.eth.gasPrice;
       var estimateGas = web3.eth.estimateGas({from: fromAddr, gasPrice: gasPrice, gas: gasLimit, data: datacode});
-      
+
       var gPrice = fee/estimateGas;
-      
+
       console.log("fee: " + fee);
       console.log("price: " + gPrice);
       console.log("estimate: " + estimateGas);
@@ -237,11 +237,11 @@ angular.module('leth.services', [])
         } catch (e) {
             reject(e);
         }
-      }); 
+      });
     },
     transferEth: function (from, to, value, fee) {
       var gas = web3.eth.estimateGas({});
-      var gasPrice = web3.eth.gasPrice; 
+      var gasPrice = web3.eth.gasPrice;
       console.log("fee: " + fee);
       var gPrice =   web3.toBigNumber(fee).dividedBy(gas).round();
       console.log(gPrice.toNumber());
@@ -267,6 +267,56 @@ angular.module('leth.services', [])
         }
       });
     },
+    getUCALCurrencyRate: function (contract) {
+      var buyPrice = contract['buyPrice'].apply().c[0];
+      if (buyPrice) {
+        console.log("Currency Rate:"+(buyPrice/1000000));
+        return (buyPrice/1000000);
+      }
+      return (0.0121784796);// follow 1 eur = 0.0121784796 eth
+    },
+    transferUCALCoin: function (contract, nameSend, from, to, amount , ufee,  efee) {
+      // var ufee = efee *AppService.getUCALCurrencyRate();
+      // amount += efee * (1/(1.0e18)) * getUCALCurrencyRate();
+      // console.log("transferUCALCoin:"+amount+" vs "+ufee + " vs "+efee);
+      // // amount+=ufee;
+      // console.log("transferUCALCoin:"+amount+" nameSend:"+nameSend);
+      // console.log("Transfer function");
+      // console.log(contract[nameSend]);
+      return $q(function (resolve, reject) {
+        var fromAddr = from;
+        var toAddr = to;
+        var functionName = nameSend;
+        var dataContract = contract[functionName].getData();
+        var args = JSON.parse('[]');
+        // var gasPrice = web3.eth.gasPrice;
+        // var estimateGas = web3.eth.estimateGas({from: fromAddr, gasPrice: gasPrice, gas: gas});
+        // var gas = estimateGas; //3000000;
+        // var estimateGas=web3.eth.estimateGas({});
+        // var gas = '0x2DC6C0';
+        // efee *= 1.1;
+        var gas = web3.eth.estimateGas({});
+        var gasPrice = web3.eth.gasPrice;
+        var gPrice =   web3.toBigNumber(efee).dividedBy(gas).round();
+        try {
+          // args.push(toAddr,amount,{from: fromAddr, gasPrice: gPrice, gas: gas});
+          args.push(toAddr,amount,ufee, {from: fromAddr, gasPrice: gPrice, gas: gas});
+
+          var callback = function (err, hash) {
+            var result = new Array;
+            result.push(err);
+            result.push(hash);
+            resolve(result);
+          }
+          args.push(callback);
+          console.log(args);
+          contract[functionName].apply(this, args);
+        } catch (e) {
+            console.log("Error:"+e);
+            reject(e);
+          }
+        });
+    },
     transferCoin: function (contract, nameSend, from, to, amount ) {
       return $q(function (resolve, reject) {
         var fromAddr = from;
@@ -275,7 +325,7 @@ angular.module('leth.services', [])
         var args = JSON.parse('[]');
         var gasPrice = web3.eth.gasPrice;
         var estimateGas = web3.eth.estimateGas({from: fromAddr, gasPrice: gasPrice, gas: gas});
-        var gas = estimateGas; //3000000; 
+        var gas = estimateGas; //3000000;
         try {
           args.push(toAddr,amount,{from: fromAddr, gasPrice: gasPrice, gas: gas});
           var callback = function (err, hash) {
@@ -289,8 +339,8 @@ angular.module('leth.services', [])
         } catch (e) {
             reject(e);
           }
-        });  
-    }           
+        });
+    }
   }
 })
 .factory('PasswordPopup', function ($rootScope, $q, $ionicLoading, $ionicPopup) {
