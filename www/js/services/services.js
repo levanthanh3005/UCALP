@@ -150,6 +150,7 @@ angular.module('leth.services', [])
     balanceOf: function (contractCoin, unit) {
       var result;
       try {
+        // console.log(">>>>>>>>>>>>:balanceOf");
         result = contractCoin.balanceOf(this.account())/ unit;
       }catch (e){
         result = undefined;

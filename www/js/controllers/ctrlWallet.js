@@ -1,5 +1,5 @@
 angular.module('leth.controllers')
-  .controller('WalletCtrl', function ($scope, $rootScope, $stateParams, $ionicLoading, $ionicModal, $state,
+  .controller('WalletCtrl', function ($interval, $scope, $rootScope, $stateParams, $ionicLoading, $ionicModal, $state,
                                       $ionicPopup, $cordovaBarcodeScanner, $ionicActionSheet,
                                       $timeout, AppService, Transactions,ExchangeService, Chat) {
     var TrueException = {};
@@ -89,6 +89,32 @@ angular.module('leth.controllers')
       }
     };
 
+    $scope.playAudio = function(input) {
+           var audio = new Audio(input);
+           audio.play();
+    };
+    var theInterval = $interval(function(){
+      // console.log("theInterval");
+      var oldBalance = $scope.balance;
+      if($scope.idCoin==0 || $scope.idCoin==undefined) {
+        $scope.balance = AppService.balance($scope.unit);
+      }else {
+        $scope.balance = AppService.balanceOf($scope.contractCoin,$scope.unit + 'e+' + $scope.decimals);
+      }
+      if($scope.symbolCoin=="Ա" || $scope.symbolCoin=="B") {
+        $scope.feeLabel = (Math.round($scope.fee * (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin) * 1000000)/1000000)/ $scope.unit;
+      }
+      if(oldBalance != $scope.balance){
+        console.log("Updated =>>>>>>>>>>>>>>>>>>>"+oldBalance+"<vs>"+$scope.balance);
+        //add sound here
+        $scope.playAudio("../../audio/3 Tone Notification0.mp3");
+      }
+    }.bind(this), 10000);
+
+    $scope.$on('$destroy', function () {
+      $interval.cancel(theInterval)
+    });
+
     $scope.$on('$ionicView.enter', function() {
       $rootScope.hideTabs = ''; //patch
       if($scope.idCoin==0 || $scope.idCoin==undefined)
@@ -139,7 +165,6 @@ angular.module('leth.controllers')
     }
 
     $scope.sendCoins = function (addr, amount, unit, idCoin) {
-      console.log("sendCoins >>"+amount);
       var value = parseFloat(amount) * unit;
       if( $scope.idCoin==0){
         AppService.transferEth($scope.account, addr, value, $scope.fee).then(
