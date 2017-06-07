@@ -20,6 +20,7 @@ angular.module('leth.controllers')
         $scope.unit = $scope.listUnit[0].multiplier;
         $scope.balance = AppService.balance($scope.unit);
         $scope.symbolFee = $scope.symbolCoin;
+        // animator( $scope.shapes, $timeout, true );
       }
       else {
       	$scope.getNetwork();
@@ -40,6 +41,8 @@ angular.module('leth.controllers')
           $scope.unit = $scope.listUnit[0].multiplier;
           $scope.balance = AppService.balanceOf($scope.contractCoin,$scope.unit + 'e+' + $scope.decimals);
           $scope.symbolFee = $scope.symbolCoin;
+          // animator( $scope.shapes, $timeout, false );
+
         } else {
     		    $scope.listUnit = activeCoins[index-1].Units;
             $scope.unit = $scope.listUnit[0].multiplier;
@@ -64,6 +67,11 @@ angular.module('leth.controllers')
       }
 
       updateExchange();
+      ////For ball
+      $scope.shapes = [];
+      for (i = 0; i < ($scope.balance<100 ? $scope.balance : 100); i++) {
+          $scope.shapes.push( buildShape() );
+      }
     }
     var setDefaultsUCALCoin = function(){
       // console.log("setDefaultsUCALCoin");
@@ -109,10 +117,53 @@ angular.module('leth.controllers')
         //add sound here
         $scope.playAudio("../../audio/3 Tone Notification0.mp3");
       }
+      ////////////////////////////////////////
+
+      ////////////////////////////////////////
     }.bind(this), 10000);
 
+    var theIntervalForBall = $interval(function(){
+      // if(!($scope.symbolCoin=="Ա" || $scope.symbolCoin=="B")) {
+      //   return;
+      // }
+      var shapes = $scope.shapes;
+      var i;
+      var now = new Date().getTime();
+      var maxX      = 1450;
+      var maxY      = 600;
+      // var now = new Date().getTime();
+
+       for (i = 0; i < shapes.length; i++) {
+         var shape = shapes[i];
+         var elapsed = (shape.timestamp || now) - now;
+
+         shape.timestamp = now;
+         shape.x += elapsed * shape.velX / 1000;
+         shape.y += elapsed * shape.velY / 1000;
+
+         if (shape.x > maxX) {
+             shape.x = 2 * maxX - shape.x;
+             shape.velX *= -1;
+         }
+         if (shape.x < 30) {
+             shape.x = 30;
+             shape.velX *= -1;
+         }
+
+         if (shape.y > maxY) {
+             shape.y = 2 * maxY - shape.y;
+             shape.velY *= -1;
+         }
+         if (shape.y < 20) {
+             shape.y = 20;
+             shape.velY *= -1;
+         }
+       }
+     }.bind(this), 30);
+
     $scope.$on('$destroy', function () {
-      $interval.cancel(theInterval)
+      $interval.cancel(theInterval);
+      $interval.cancel(theIntervalForBall);
     });
 
     $scope.$on('$ionicView.enter', function() {
@@ -425,4 +476,66 @@ angular.module('leth.controllers')
     $scope.listTransaction = function(){
       $state.go('tab.transall');
     }
-  })
+
+    function buildShape () {
+        var maxVelocity = 200;
+        return {
+            color     : '#' + (Math.random() * 0xFFFFFF << 0).toString(16),
+            x         : Math.min(380,Math.max(20,(Math.random() * 380))),
+            y         : Math.min(180,Math.max(20,(Math.random() * 180))),
+
+            velX    : (Math.random() * maxVelocity),
+            velY    : (Math.random() * maxVelocity)
+        };
+    };
+
+    // Publish list of shapes on the $scope/presentationModel
+    // Then populate the list with 100 shapes randomized in position
+    // and color
+    // $scope.shapes = [];
+    // for (i = 0; i < $scope.balance; i++) {
+    //     $scope.shapes.push( buildShape() );
+    // }
+
+    // Start timer-based, changes of the shape properties
+    // animator( $scope.shapes, $timeout, false );
+  });
+
+  function animator(shapes, $timeout, isStop) {
+    (function tick() {
+        var i;
+        var now = new Date().getTime();
+        var maxX      = 1450;
+        var maxY      = 600;
+        var now = new Date().getTime();
+
+         for (i = 0; i < shapes.length; i++) {
+           var shape = shapes[i];
+           var elapsed = (shape.timestamp || now) - now;
+
+           shape.timestamp = now;
+           shape.x += elapsed * shape.velX / 1000;
+           shape.y += elapsed * shape.velY / 1000;
+
+           if (shape.x > maxX) {
+               shape.x = 2 * maxX - shape.x;
+               shape.velX *= -1;
+           }
+           if (shape.x < 30) {
+               shape.x = 30;
+               shape.velX *= -1;
+           }
+
+           if (shape.y > maxY) {
+               shape.y = 2 * maxY - shape.y;
+               shape.velY *= -1;
+           }
+           if (shape.y < 20) {
+               shape.y = 20;
+               shape.velY *= -1;
+           }
+         }
+
+         if (!isStop) { $timeout(tick, 30);} else {$timeout.cancel(tick);};
+    })();
+}

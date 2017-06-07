@@ -1501,6 +1501,7 @@ var UcalToken = {
  $scope.checkStatus = function(t){
     web3.eth.getTransaction(t.id, function(err,res){
       if(res){
+        console.log("Transaction is executed");
         t.block = res.blockNumber;
         Transactions.upd(t);
         $scope.transactions = Transactions.all();

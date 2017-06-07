@@ -46,5 +46,9 @@
           <div class="col col-30"></div>
         </div>
     </div>
+    <div class="boundingBox">
+        <div class="circle" ng-repeat="shape in shapes" ng-style="{ 'backgroundColor':shape.color, 'left':shape.x+'px', 'top':shape.y+'px' }">
+        {{symbolCoin}}</div>
+      </div>
   </ion-content>
 </ion-view>

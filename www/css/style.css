@@ -14,9 +14,9 @@ img#headerSetting
 .no-bmp
 {
   border: 0px !important;
-  margin: 0px !important; 
+  margin: 0px !important;
   padding: 0px !important;
- 
+
 }
 .relative-position
 {
@@ -25,7 +25,7 @@ img#headerSetting
  right:0px !important;
  /* margin: 0px;*/
  max-width: 65px;
-  
+
 }
 .full-width
 {
@@ -37,7 +37,7 @@ img#headerSetting
   padding-left: 16px !important;
   padding-top: 0px !important;
   padding-bottom: 0px !important;
-  
+
 }
 
 
@@ -84,24 +84,24 @@ img#headerSetting
 }
 
 
-/* 
+/*
   ==========================================================================
    Font Awesome Style
-  ========================================================================== 
+  ==========================================================================
 */
 
 .scrollBg {
   background-color: #efeff4; }
 
-body.keyboard-open .has-footer{ 
+body.keyboard-open .has-footer{
 bottom: 150;
 }
 
 
-/* 
+/*
   ==========================================================================
    Font Awesome Style
-  ========================================================================== 
+  ==========================================================================
 */
 
 @font-face {
@@ -190,10 +190,10 @@ bottom: 150;
     line-height: 0px;
     vertical-align: sub;
 }
-/* 
+/*
   ==========================================================================
    Chat Message Style
-  ========================================================================== 
+  ==========================================================================
 */
 
 .has-chat-header {
@@ -264,10 +264,10 @@ bottom: 150;
   }
   .bubble-other .message{
 
-  } 
+  }
 
   .bubble-other .image {
-    
+
   }
 
 
@@ -301,7 +301,7 @@ bottom: 150;
     background-image: url(../img/backgrounds/xmas.png);
     background-color: #E0DAD6;
     background-repeat: no-repeat;
-    background-size: 100%; 
+    background-size: 100%;
     height: 300px;}
 
   .footer-chat .item-input-wrapper {
@@ -313,10 +313,10 @@ bottom: 150;
     font-size: 18px;
     line-height: 32px; }
 
-/* 
+/*
   ==========================================================================
    Bot Style Dappleth Templates
-  ========================================================================== 
+  ==========================================================================
 */
 .has-dappleth {
   top: 87px; }
@@ -383,10 +383,10 @@ bottom: 150;
   }
   .botbubble-other .bot{
 
-  } 
+  }
 
   .botbubble-other .botimage {
-    
+
   }
 
 
@@ -426,10 +426,10 @@ bottom: 150;
     line-height: 32px; }
 
 
-/* 
+/*
   ==========================================================================
    Image viewer style
-  ========================================================================== 
+  ==========================================================================
 */
   .transparent {
     background: transparent !important;
@@ -465,10 +465,10 @@ bottom: 150;
     }
   }
 
-/* 
+/*
   ==========================================================================
    Horizontal List
-  ========================================================================== 
+  ==========================================================================
 */
 
 
@@ -550,6 +550,25 @@ bottom: 150;
 
 }
 
+.circle {
+    display:block;
+    position:absolute;
+    height: 20px;
+    width: 20px;
+    background-color: #999;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.box {
+    display:block;
+    position:absolute;
+    height: 20px;
+    width: 20px;
+
+}
 
 
 /*
