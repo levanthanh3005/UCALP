@@ -271,38 +271,36 @@ angular.module('leth.services', [])
     getUCALCurrencyRate: function (contract) {
       var buyPrice = contract['buyPrice'].apply().c[0];
       if (buyPrice) {
-        console.log("Currency Rate:"+(buyPrice/1000000));
+        // console.log("Currency Rate:"+(buyPrice/1000000));
         return (buyPrice/1000000);
       }
       return (0.0121784796);// follow 1 eur = 0.0121784796 eth
     },
-    transferUCALCoin: function (contract, nameSend, from, to, amount , ufee,  efee) {
-      // var ufee = efee *AppService.getUCALCurrencyRate();
-      // amount += efee * (1/(1.0e18)) * getUCALCurrencyRate();
-      // console.log("transferUCALCoin:"+amount+" vs "+ufee + " vs "+efee);
-      // // amount+=ufee;
-      // console.log("transferUCALCoin:"+amount+" nameSend:"+nameSend);
-      // console.log("Transfer function");
-      // console.log(contract[nameSend]);
+    getUCALTransactionFee: function (contract) {
+      var ufee = contract['ufee'].apply().c[0];
+      if (ufee) {
+        ufee = ufee * 1.0e12;
+        // console.log("ufee:"+ufee);
+        return ufee;
+      }
+      return 10600200000000;
+    },
+    transferUCALCoin: function (contract, nameSend, from, to, amount , ufee,  efee , msgText) {
+      msgText = msgText ? msgText : "#";
       return $q(function (resolve, reject) {
         var fromAddr = from;
         var toAddr = to;
         var functionName = nameSend;
-        var dataContract = contract[functionName].getData();
+        var dataContract = contract[functionName].getData(toAddr,amount, msgText);
         var args = JSON.parse('[]');
-        // var gasPrice = web3.eth.gasPrice;
-        // var estimateGas = web3.eth.estimateGas({from: fromAddr, gasPrice: gasPrice, gas: gas});
-        // var gas = estimateGas; //3000000;
-        // var estimateGas=web3.eth.estimateGas({});
-        // var gas = '0x2DC6C0';
-        // efee *= 1.1;
-        var gas = web3.eth.estimateGas({});
+
+        var gas = web3.eth.estimateGas({from: fromAddr, to: to, data: dataContract}) * 10;
+        console.log("gas:"+gas);
         var gasPrice = web3.eth.gasPrice;
+
         var gPrice =   web3.toBigNumber(efee).dividedBy(gas).round();
         try {
-          // args.push(toAddr,amount,{from: fromAddr, gasPrice: gPrice, gas: gas});
-          args.push(toAddr,amount,ufee, {from: fromAddr, gasPrice: gPrice, gas: gas});
-
+          args.push(toAddr,amount, msgText, {from: fromAddr, gasPrice: gPrice, gas: gas});
           var callback = function (err, hash) {
             var result = new Array;
             result.push(err);
@@ -310,8 +308,8 @@ angular.module('leth.services', [])
             resolve(result);
           }
           args.push(callback);
-          console.log(args);
           contract[functionName].apply(this, args);
+
         } catch (e) {
             console.log("Error:"+e);
             reject(e);

@@ -5,7 +5,10 @@
       <ion-list class="list" can-swipe="true">
       <ion-item class="item item-divider item-avatar-left  item-icon-right item-avatar-right">
         <img ng-src="{{logoCoin}}" ng-click="scrollRefresh()"/>
-        <label id="{{idCoin}}"><b>{{balance | currency:symbolCoin+' ':unitRound}} </b><span class="subdued" ">({{balanceExc}})</span></label>
+        <label id="{{idCoin}}"><b>{{balance | currency:symbolCoin+' ':unitRound}} </b>
+          <span class="subdued" ">({{balanceExc}})</span>
+          <span class="subdued" ">Total Pending {{pendingBalance | currency:symbolCoin+' ':unitRound}} </span>
+        </label>
         <p>
           <label >{{descCoin}}</label>
         </p>
@@ -30,11 +33,16 @@
         </div>
         <div class="list">
           <div class="item range range-positive">
-            <span class="item-note">fee {{feeLabel}} {{symbolFee}}</span>
-            <input type="range" ng-model="fee"  min="{{minFee}}" max="{{maxFee}}" step="{{step}}" value="{{fee}}" ng-init="fee" ng-change="setFee(fee)">
+            <span class="item-note">with the transaction fee : {{feeLabel}} {{symbolFee}}</span>
+            <!-- <input type="range" ng-model="fee"  min="{{minFee}}" max="{{maxFee}}" step="{{step}}" value="{{fee}}" ng-init="fee" ng-change="setFee(fee)"> -->
           </div>
         </div>
-        <button ng-disabled="!unit || !amountTo>0 || !isValidAddr(addrTo)" class="button button-block button-energized" ng-click="confirmSend(addrTo,amountTo,unit,idCoin)"><i class="icon ion-paper-airplane"></i> Send
+        <div class="item item-input">
+            <span class="item-note">Message :
+               <input type="text" ng-model="msgText" placeholder="Type your message here" ng-required="true"/>
+            </span>
+        </div>
+        <button ng-disabled="!unit || !amountTo>0 || !isValidAddr(addrTo)" class="button button-block button-energized" ng-click="confirmSend(addrTo,amountTo,unit,idCoin,msgText)"><i class="icon ion-paper-airplane"></i> Send
         </button>
         </div>
         <div class="item tabs row">

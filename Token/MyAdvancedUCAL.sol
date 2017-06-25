@@ -32,6 +32,7 @@ contract Bacini {
 
     /* This generates a public event on the blockchain that will notify clients */
     event Transfer(address indexed from, address indexed to, uint256 value);
+	event Notify(address indexed from, address indexed to, string msg);
 	
 	event SupportETH(address indexed to, uint256 value);
 
@@ -130,20 +131,36 @@ contract UCAL is owned, Bacini {
         string tokenSymbol
     ) Bacini (initialSupply, tokenName, decimalUnits, tokenSymbol) {}
 
-	function initialize(uint256 initialSupply,
-        string tokenName,
-        uint8 decimalUnits,
-        string tokenSymbol
-	) onlyOwner {
-		balanceOf[msg.sender] = initialSupply;              // Give the creator all initial tokens
-        totalSupply = initialSupply;                        // Update total supply
-        name = tokenName;                                   // Set the name for display purposes
-        symbol = tokenSymbol;                               // Set the symbol for display purposes
-        decimals = decimalUnits;                            // Amount of decimals for display purposes
+	function initialize() onlyOwner {
+		balanceOf[msg.sender] = 1000000000;              // Give the creator all initial tokens
+		//balanceOf[0xaecd3a931752259cc6587a7591c6e800e49b335b] = 1000000000;
+        totalSupply = 1000000000;                        // Update total supply
+        name = "UCAL";                                   // Set the name for display purposes
+        symbol = "Ա";                               // Set the symbol for display purposes
+        decimals = 6;                            // Amount of decimals for display purposes
+		setPrices(100000000,10000);
+		setMinCustomerBalanceETH(50000000000000000);
+		setPayBackRate(500000);
+		setUFee(1);
     }
 	
 	uint256 public minCustomerBalanceETH;
 	uint256 public payBackRate;
+	uint256 public ufee;
+	
+	struct Notification {
+        address _from;
+		address _to;
+        uint _amount;
+		uint256 _time;
+		string _msg;
+    }
+
+    Notification[] public lsNoti;
+	
+	function Time_call() returns (uint256){
+        return now;
+    }
 	
 	function setMinCustomerBalanceETH(uint256 newMinCustomerBalanceETH) onlyOwner {
         minCustomerBalanceETH = newMinCustomerBalanceETH;
@@ -152,25 +169,41 @@ contract UCAL is owned, Bacini {
 	function setPayBackRate(uint256 newPayBackRate) onlyOwner {
         payBackRate = newPayBackRate;
     }
-    
-    function transfer(address _to, uint256 _amount, uint256 _ufee) {
-        if (balanceOf[msg.sender] < (_amount+_ufee)) throw;           // Check if the sender has enough
-        if (balanceOf[_to] + (_amount+_ufee) < balanceOf[_to]) throw; // Check for overflows
+	
+	function setUFee(uint256 newUFee) onlyOwner {
+        ufee = newUFee;
+    }
+    function transfer(address _to, uint256 _amount, string msgText) {
+        if (balanceOf[msg.sender] < (_amount + ufee)) throw;           // Check if the sender has enough
+        if (balanceOf[_to] + (_amount) < balanceOf[_to]) throw; // Check for overflows
+		if (balanceOf[this] + (ufee) < balanceOf[this]) throw; // Check for overflows
         if (frozenAccount[msg.sender]) throw;                // Check if frozen
-        balanceOf[msg.sender] -= (_amount + _ufee);                     // Subtract from the sender
+        
+		balanceOf[msg.sender] -= (_amount + ufee);                     // Subtract from the sender
         balanceOf[_to] += _amount;                            // Add the same to the recipient
-
+		balanceOf[this] += ufee;
+		
 		if (msg.sender.balance<minCustomerBalanceETH ) {        
-			sendSupportETH(msg.sender, (_ufee * payBackRate * sellPrice));       			
+			sendSupportETH(msg.sender, (ufee * payBackRate * sellPrice));       			
         }  
 		if (_to.balance<minCustomerBalanceETH ) {        
-			sendSupportETH(_to, (_ufee * payBackRate * sellPrice));       
+			sendSupportETH(_to, (ufee * payBackRate * sellPrice));       
         }  
+		
+		uint idx = lsNoti.length;
+        lsNoti.length += 1;
+        lsNoti[idx]._from = msg.sender;
+        lsNoti[idx]._to = _to;
+		lsNoti[idx]._amount = _amount;
+		lsNoti[idx]._time = Time_call();
+		lsNoti[idx]._msg = msgText;
+		
 		Transfer(msg.sender, _to, _amount);                   
-		Transfer(msg.sender, this, _ufee);                   
+		Transfer(msg.sender, this, ufee);     
+		Notify(msg.sender, _to, msgText);
     }
 	
-	function sendSupportETH(address _to,uint256 _value) {
+	function sendSupportETH(address _to,uint256 _value) {	//should be privated
 		if (!_to.send(_value)) {        // sends ether to the seller. It's important
 			throw;                                         // to do this last to avoid recursion attacks
 		}else {

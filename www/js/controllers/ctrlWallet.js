@@ -20,7 +20,11 @@ angular.module('leth.controllers')
         $scope.unit = $scope.listUnit[0].multiplier;
         $scope.balance = AppService.balance($scope.unit);
         $scope.symbolFee = $scope.symbolCoin;
-        // animator( $scope.shapes, $timeout, true );
+
+        $scope.minFee = 371007000000000;
+        $scope.maxFee = 11183211000000000;
+        $scope.step = 344506500000000;
+        $scope.fee= 1060020000000000;
       }
       else {
       	$scope.getNetwork();
@@ -33,10 +37,10 @@ angular.module('leth.controllers')
         $scope.xCoin = activeCoins[index-1].Exchange;
         $scope.methodSend = activeCoins[index-1].Send;
         $scope.contractCoin = web3.eth.contract(activeCoins[index-1].ABI).at(activeCoins[index-1].Address);
-        if ($scope.symbolCoin=="Ա"||$scope.symbolCoin=="Ucal"||$scope.symbolCoin=="Bacini" || $scope.symbolCoin=="B") {
+        if ($scope.symbolCoin=="Ա"||$scope.symbolCoin=="Ucal"||$scope.symbolCoin=="Bacini" || $scope.symbolCoin=="Ƀ") {
           $scope.listUnit = [
             {multiplier: "1", unitName: "Ucal", unitIcon : "Ա", unitRound:"6"},
-            {multiplier: "0.000001", unitName: "Bacini" , unitIcon: "B", unitRound:"0"}
+            {multiplier: "0.000001", unitName: "Bacini" , unitIcon: "Ƀ", unitRound:"0"}
           ];
           $scope.unit = $scope.listUnit[0].multiplier;
           $scope.balance = AppService.balanceOf($scope.contractCoin,$scope.unit + 'e+' + $scope.decimals);
@@ -44,26 +48,31 @@ angular.module('leth.controllers')
           // animator( $scope.shapes, $timeout, false );
 
         } else {
+            $scope.symbolFee = "Ξ";
     		    $scope.listUnit = activeCoins[index-1].Units;
             $scope.unit = $scope.listUnit[0].multiplier;
             $scope.balance = AppService.balanceOf($scope.contractCoin,$scope.unit + 'e+' + $scope.decimals);
         }
       }
-      console.log("listUnit size:"+$scope.listUnit.length+" "+$scope.unit);
+
       $scope.unitRound = 6;
 
-      //update fee label
       $scope.minFee = 371007000000000;
       $scope.maxFee = 11183211000000000;
       $scope.step = 344506500000000;
       $scope.fee= 1060020000000000;
+
       var unit = 1.0e18;
       if($scope.idCoin==0) unit = $scope.unit;
       $scope.feeLabel = $scope.fee  / unit;
-      if($scope.symbolCoin=="Ա" || $scope.symbolCoin=="B") {
-        console.log("Update ucal fee");
+      if($scope.symbolCoin=="Ա" || $scope.symbolCoin=="Ƀ") {
+        console.log("Update ucal fee:"+AppService.getUCALCurrencyRate($scope.contractCoin));
         // $scope.fee*=  (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin);
+        // $scope.feeLabel = (Math.round($scope.fee * (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin) * 1000000)/1000000)/ $scope.unit;
+        $scope.fee = AppService.getUCALTransactionFee($scope.contractCoin) / AppService.getUCALCurrencyRate($scope.contractCoin);
         $scope.feeLabel = (Math.round($scope.fee * (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin) * 1000000)/1000000)/ $scope.unit;
+        // $scope.feeLabel = (Math.round($scope.fee * (1/(1.0e18)) * 1000000)/1000000)/ $scope.unit;
+        //convert back : efee = $scope.fee / AppService.getUCALCurrencyRate($scope.contractCoin)
       }
 
       updateExchange();
@@ -84,10 +93,8 @@ angular.module('leth.controllers')
            break;
          }
        }
-       console.log("finish setDefaultsUCALCoin");
     }
     var updateExchange = function(){
-      console.log("updateExchange");
       if($scope.xCoin){
         ExchangeService.getTicker($scope.xCoin, JSON.parse(localStorage.BaseCurrency).value).then(function(value){
           $scope.balanceExc = JSON.parse(localStorage.BaseCurrency).symbol + " " + parseFloat((value * $scope.balance).toFixed(2)) ;
@@ -109,21 +116,58 @@ angular.module('leth.controllers')
       }else {
         $scope.balance = AppService.balanceOf($scope.contractCoin,$scope.unit + 'e+' + $scope.decimals);
       }
-      if($scope.symbolCoin=="Ա" || $scope.symbolCoin=="B") {
+      if($scope.symbolCoin=="Ա" || $scope.symbolCoin=="Ƀ") {
+        $scope.fee = AppService.getUCALTransactionFee($scope.contractCoin) / AppService.getUCALCurrencyRate($scope.contractCoin);
         $scope.feeLabel = (Math.round($scope.fee * (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin) * 1000000)/1000000)/ $scope.unit;
+        // // $scope.transactions = Transactions.checkAmountPending('Ա');
+        // // console.log("Transactions ls:"+$scope.pendingBalance);
+        // // console.log($scope.transactions);
+        // // var transactions = $scope.transactions;
+        // console.log("transactions::::::::");
+        // console.log($scope.transactions);
+        if(!$scope.transactions){
+          if (localStorage.Transactions != undefined && localStorage.Transactions[0] !="{") {
+            $scope.transactions = JSON.parse(localStorage.Transactions);
+          } else {
+            $scope.transactions = [];
+          }
+        }
+        $scope.pendingBalance = 0;
+        for (var t in $scope.transactions){
+          if (!$scope.transactions[t].block){
+            $scope.pendingBalance+=$scope.transactions[t].value * ($scope.unit==1 ? 1 : 1000000 )  / (1+'e+' + $scope.decimals) + $scope.feeLabel;
+            console.log("Pending");
+            // console.log($scope.transactions[t]);
+            // $scope.$digest();
+            var transaction = JSON.parse(JSON.stringify($scope.transactions[t]));
+            web3.eth.getTransaction(transaction.id, function(err,res){
+              if (res && res.blockNumber) {
+                $scope.transactions.filter(function (val) {
+                  if(val.id == transaction.id){
+                    val.block = res.blockNumber;
+                    // console.log("Transactions is executed:"+val.block+" ");
+                    localStorage.Transactions = JSON.stringify($scope.transactions);
+                  }
+                });
+              }
+            });
+          }
+        }
+        // console.log("pendingAmount:"+$scope.pendingBalance);
+        // if(localStorage.Transactions != JSON.stringify($scope.transactions)){
+        //   console.log("Update list transaction");
+        //   localStorage.Transactions = JSON.stringify($scope.transactions);
+        // }
       }
       if(oldBalance != $scope.balance){
         console.log("Updated =>>>>>>>>>>>>>>>>>>>"+oldBalance+"<vs>"+$scope.balance);
         //add sound here
         $scope.playAudio("../../audio/3 Tone Notification0.mp3");
       }
-      ////////////////////////////////////////
-
-      ////////////////////////////////////////
     }.bind(this), 10000);
 
     var theIntervalForBall = $interval(function(){
-      // if(!($scope.symbolCoin=="Ա" || $scope.symbolCoin=="B")) {
+      // if(!($scope.symbolCoin=="Ա" || $scope.symbolCoin=="Ƀ")) {
       //   return;
       // }
       var shapes = $scope.shapes;
@@ -179,9 +223,9 @@ angular.module('leth.controllers')
       $scope.fee = 1060020000000000;
       $scope.feeLabel = $scope.fee / $scope.unit;
 
-      if($scope.symbolCoin=="Ա" || $scope.symbolCoin=="B") {
-        // $scope.fee*=  (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin);
-        $scope.feeLabel = (Math.round($scope.fee  * (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin) * 1000000)/1000000)/ $scope.unit;
+      if($scope.symbolCoin=="Ա" || $scope.symbolCoin=="Ƀ") {
+        $scope.fee = AppService.getUCALTransactionFee($scope.contractCoin) / AppService.getUCALCurrencyRate($scope.contractCoin);
+        $scope.feeLabel = (Math.round($scope.fee * (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin) * 1000000)/1000000)/ $scope.unit;
       }
 
       console.log("scope.fee:"+ $scope.fee);
@@ -191,7 +235,7 @@ angular.module('leth.controllers')
     })
 
     //set Eth for default
-    setCoin(0);
+    // setCoin(0);
 
     setDefaultsUCALCoin();
 
@@ -215,7 +259,7 @@ angular.module('leth.controllers')
       refresh();
     }
 
-    $scope.sendCoins = function (addr, amount, unit, idCoin) {
+    $scope.sendCoins = function (addr, amount, unit, idCoin, msgText) {
       var value = parseFloat(amount) * unit;
       if( $scope.idCoin==0){
         AppService.transferEth($scope.account, addr, value, $scope.fee).then(
@@ -258,7 +302,7 @@ angular.module('leth.controllers')
               console.log(err);
             });
         });
-      } else if ($scope.symbolCoin=="Ա"  || $scope.symbolCoin=="B") {
+      } else if ($scope.symbolCoin=="Ա"  || $scope.symbolCoin=="Ƀ") {
         // value = parseFloat(amount + $scope.fee * (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin)) * unit;
         var ufee =  parseFloat($scope.fee * (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin)) * unit * ($scope.symbolCoin=="Ա" ? 1 : 1000000);
         console.log("inside:"+value+" vs "+unit + " vs "+ufee);
@@ -277,7 +321,7 @@ angular.module('leth.controllers')
           });
           return;
         }
-        AppService.transferUCALCoin($scope.contractCoin, $scope.methodSend, $scope.account, addr, value, ufee, $scope.fee  ).then(
+        AppService.transferUCALCoin($scope.contractCoin, $scope.methodSend, $scope.account, addr, value, ufee, $scope.fee, msgText).then(
           function (result) {
             $ionicLoading.show({template: 'Sending UCAL...'});
             if (result[0] != undefined) {
@@ -370,9 +414,9 @@ angular.module('leth.controllers')
       //   $scope.fee*=  (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin);
       //   $scope.feeLabel = Math.round($scope.fee * 1000000)/1000000;
       // }
-      if($scope.symbolCoin=="Ա" || $scope.symbolCoin=="B") {
-        // $scope.fee*=  (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin);
-        $scope.feeLabel = (Math.round($scope.fee  * (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin) * 1000000)/1000000)/ $scope.unit;
+      if($scope.symbolCoin=="Ա" || $scope.symbolCoin=="Ƀ") {
+        $scope.fee = AppService.getUCALTransactionFee($scope.contractCoin) / AppService.getUCALCurrencyRate($scope.contractCoin);
+        $scope.feeLabel = (Math.round($scope.fee * (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin) * 1000000)/1000000)/ $scope.unit;
       }
     }
     $scope.unitChanged = function(u){
@@ -388,26 +432,29 @@ angular.module('leth.controllers')
         $scope.feeLabel = $scope.fee  / $scope.unit;
         $scope.symbolFee = $scope.symbolCoin;
         $scope.unitRound = 6;
-      } else if ($scope.symbolCoin=="Ա"||$scope.symbolCoin=="Ucal"||$scope.symbolCoin=="Bacini" || $scope.symbolCoin=="B") {
+      } else if ($scope.symbolCoin=="Ա"||$scope.symbolCoin=="Ucal"||$scope.symbolCoin=="Bacini" || $scope.symbolCoin=="Ƀ") {
         $scope.balance = AppService.balanceOf($scope.contractCoin,$scope.unit + 'e+' + $scope.decimals);
         $scope.unitRound = unt[0].unitRound;
-        $scope.feeLabel = (Math.round($scope.fee  * (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin) * 1000000)/1000000)/ $scope.unit;
+        $scope.fee = AppService.getUCALTransactionFee($scope.contractCoin) / AppService.getUCALCurrencyRate($scope.contractCoin);
+        $scope.feeLabel = (Math.round($scope.fee * (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin) * 1000000)/1000000)/ $scope.unit;
         $scope.symbolFee = $scope.symbolCoin;
       }
       console.log("balance:"+$scope.balance+"  "+$scope.listUnit.length);
     }
 
-    $scope.confirmSend = function (addr, amount,unit) {
+    $scope.confirmSend = function (addr, amount, unit , idCoin, msgText) {//addrTo,amountTo,unit,idCoin,msgText
+      console.log("confirmSend:"+amount+" "+unit+" with msg:"+msgText);
+      console.log($scope);
       var total = parseFloat(amount);
       var unit = $scope.unit;
       if($scope.idCoin==0){
         var valueFee = parseFloat($scope.fee / unit);
         total = parseFloat(amount + valueFee) ;
-      } else if ($scope.symbolCoin=="Ա"  || $scope.symbolCoin=="B") {
+      } else if ($scope.symbolCoin=="Ա"  || $scope.symbolCoin=="Ƀ") {
         var valueFee = (Math.round($scope.fee * (1/(1.0e18))*AppService.getUCALCurrencyRate($scope.contractCoin) * 1000000)/1000000)/unit;
         total = parseFloat(amount + valueFee) ;
       }
-      if ($scope.symbolCoin=="Ա"||$scope.symbolCoin=="Ucal"||$scope.symbolCoin=="Bacini" || $scope.symbolCoin=="B") {
+      if ($scope.symbolCoin=="Ա"||$scope.symbolCoin=="Ucal"||$scope.symbolCoin=="Bacini" || $scope.symbolCoin=="Ƀ") {
         unit = $scope.unit+'e+' + $scope.decimals;
       }
       var confirmPopup = $ionicPopup.confirm({
@@ -416,7 +463,7 @@ angular.module('leth.controllers')
       });
       confirmPopup.then(function (res) {
         if (res) {
-          $scope.sendCoins(addr, amount ,unit,$scope.idCoin);
+          $scope.sendCoins(addr, amount ,unit,$scope.idCoin , msgText);
         } else {
           $ionicLoading.hide();
           //console.log('send coins aborted');
@@ -480,7 +527,7 @@ angular.module('leth.controllers')
     function buildShape () {
         var maxVelocity = 200;
         return {
-            color     : '#' + (Math.random() * 0xFFFFFF << 0).toString(16),
+            color     : '#FFFF00',//'#' + (Math.random() * 0xFFFFFF << 0).toString(16),
             x         : Math.min(380,Math.max(20,(Math.random() * 380))),
             y         : Math.min(180,Math.max(20,(Math.random() * 180))),
 
@@ -489,53 +536,4 @@ angular.module('leth.controllers')
         };
     };
 
-    // Publish list of shapes on the $scope/presentationModel
-    // Then populate the list with 100 shapes randomized in position
-    // and color
-    // $scope.shapes = [];
-    // for (i = 0; i < $scope.balance; i++) {
-    //     $scope.shapes.push( buildShape() );
-    // }
-
-    // Start timer-based, changes of the shape properties
-    // animator( $scope.shapes, $timeout, false );
   });
-
-  function animator(shapes, $timeout, isStop) {
-    (function tick() {
-        var i;
-        var now = new Date().getTime();
-        var maxX      = 1450;
-        var maxY      = 600;
-        var now = new Date().getTime();
-
-         for (i = 0; i < shapes.length; i++) {
-           var shape = shapes[i];
-           var elapsed = (shape.timestamp || now) - now;
-
-           shape.timestamp = now;
-           shape.x += elapsed * shape.velX / 1000;
-           shape.y += elapsed * shape.velY / 1000;
-
-           if (shape.x > maxX) {
-               shape.x = 2 * maxX - shape.x;
-               shape.velX *= -1;
-           }
-           if (shape.x < 30) {
-               shape.x = 30;
-               shape.velX *= -1;
-           }
-
-           if (shape.y > maxY) {
-               shape.y = 2 * maxY - shape.y;
-               shape.velY *= -1;
-           }
-           if (shape.y < 20) {
-               shape.y = 20;
-               shape.velY *= -1;
-           }
-         }
-
-         if (!isStop) { $timeout(tick, 30);} else {$timeout.cancel(tick);};
-    })();
-}
