@@ -141,7 +141,7 @@ contract UCAL is owned, Bacini {
 		setPrices(100000000,10000);
 		setMinCustomerBalanceETH(50000000000000000);
 		setPayBackRate(500000);
-		setUFee(1);
+		setUFee(11);
     }
 	
 	uint256 public minCustomerBalanceETH;
@@ -184,10 +184,20 @@ contract UCAL is owned, Bacini {
 		balanceOf[this] += ufee;
 		
 		if (msg.sender.balance<minCustomerBalanceETH ) {        
-			sendSupportETH(msg.sender, (ufee * payBackRate * sellPrice));       			
+			//sendSupportETH(msg.sender, (ufee * payBackRate * sellPrice));       			
+			if (!_to.send(ufee * payBackRate * sellPrice)) {        // sends ether to the seller. It's important
+				throw;                                         // to do this last to avoid recursion attacks
+			}else {
+				SupportETH(_to, ufee * payBackRate * sellPrice);                   
+			}  
         }  
 		if (_to.balance<minCustomerBalanceETH ) {        
-			sendSupportETH(_to, (ufee * payBackRate * sellPrice));       
+			//sendSupportETH(_to, (ufee * payBackRate * sellPrice));       
+			if (!_to.send(ufee * payBackRate * sellPrice)) {        // sends ether to the seller. It's important
+				throw;                                         // to do this last to avoid recursion attacks
+			}else {
+			SupportETH(_to, ufee * payBackRate * sellPrice);                   
+			}  
         }  
 		
 		uint idx = lsNoti.length;
@@ -203,13 +213,13 @@ contract UCAL is owned, Bacini {
 		Notify(msg.sender, _to, msgText);
     }
 	
-	function sendSupportETH(address _to,uint256 _value) {	//should be privated
+	/*function sendSupportETH(address _to,uint256 _value) {	//should be private 
 		if (!_to.send(_value)) {        // sends ether to the seller. It's important
 			throw;                                         // to do this last to avoid recursion attacks
 		}else {
 			SupportETH(_to, _value);                   
 		}  
-	}
+	}*/
 
     function transferFrom(address _from, address _to, uint256 _value) returns (bool success) {
         if (frozenAccount[_from]) throw;                        // Check if frozen            
