@@ -4,7 +4,8 @@ angular.module('leth.controllers', [])
                                 $ionicActionSheet, $cordovaEmailComposer, $cordovaContacts, $q, $ionicLoading,
                                 $ionicLoadingConfig, $location, $sce, $lockScreen, $cordovaInAppBrowser,$cordovaLocalNotification,
                                 $cordovaBadge,$ionicScrollDelegate, $ionicListDelegate, $cordovaClipboard, $cordovaVibration,
-                                AppService, Chat, PasswordPopup, Transactions, Friends, ExchangeService, Geolocation, FeedService, nfcService, SwarmService) {
+                                AppService, Chat, PasswordPopup, Transactions, Friends, ExchangeService, Geolocation, FeedService, nfcService, SwarmService,
+                                $http) {
 
   window.refresh = function () {
     $ionicLoading.show();
@@ -36,19 +37,16 @@ angular.module('leth.controllers', [])
     // console.log("Run in controller");
     console.log("$scope.listCoins.length:"+$scope.listCoins.length);
     if ($scope.listCoins.length==0){
+      var link = 'http://localhost/wordpress/wp-ucal/UcalContract.php';
+      console.log("ready to submit");
+      $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
-var UcalToken = {
-"name" : "UCAL",
-"company" : "UCAL",
-"logo" : "http://www.blockchain.srl/logoUCAL.jpg",
-"Network" : "Ropsten",
-"symbol" : "Ա",
-"decimals" : "6",
-"abstract" : "UCAL",
-"address" : "0xece6f05f61626a6454337f0d21ae4909307c4c03",
-"ABI" : "[{\"constant\":false,\"inputs\":[],\"name\":\"Time_call\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"newSellPrice\",\"type\":\"uint256\"},{\"name\":\"newBuyPrice\",\"type\":\"uint256\"}],\"name\":\"setPrices\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_spender\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"payBackRate\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"ufee\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"name\":\"\",\"type\":\"uint8\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"newPayBackRate\",\"type\":\"uint256\"}],\"name\":\"setPayBackRate\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"sellPrice\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_amount\",\"type\":\"uint256\"},{\"name\":\"msgText\",\"type\":\"string\"}],\"name\":\"transfer\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"standard\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"newUFee\",\"type\":\"uint256\"}],\"name\":\"setUFee\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"sendSupportETH\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"target\",\"type\":\"address\"},{\"name\":\"mintedAmount\",\"type\":\"uint256\"}],\"name\":\"mintToken\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"burnFrom\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":true,\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"initialize\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"buyPrice\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"lsNoti\",\"outputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_amount\",\"type\":\"uint256\"},{\"name\":\"_time\",\"type\":\"uint256\"},{\"name\":\"_msg\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"newMinCustomerBalanceETH\",\"type\":\"uint256\"}],\"name\":\"setMinCustomerBalanceETH\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"burn\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":true,\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"buy\",\"outputs\":[],\"payable\":true,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"minCustomerBalanceETH\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"address\"}],\"name\":\"frozenAccount\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_spender\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"},{\"name\":\"_extraData\",\"type\":\"bytes\"}],\"name\":\"approveAndCall\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"address\"},{\"name\":\"\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"sell\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"target\",\"type\":\"address\"},{\"name\":\"freeze\",\"type\":\"bool\"}],\"name\":\"freezeAccount\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"inputs\":[{\"name\":\"initialSupply\",\"type\":\"uint256\"},{\"name\":\"tokenName\",\"type\":\"string\"},{\"name\":\"decimalUnits\",\"type\":\"uint8\"},{\"name\":\"tokenSymbol\",\"type\":\"string\"}],\"payable\":false,\"type\":\"constructor\"},{\"payable\":true,\"type\":\"fallback\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"target\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"frozen\",\"type\":\"bool\"}],\"name\":\"FrozenFunds\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"msg\",\"type\":\"string\"}],\"name\":\"Notify\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"SupportETH\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Burn\",\"type\":\"event\"}]"
-};
-      $scope.addCustomToken(UcalToken);
+      $http.post(link).then(function (res){
+              $scope.addCustomToken(res.data);
+        },
+        function(response) { // optional
+          console.log("fail to connect server to add UCAL Contract");
+      });
     }
   }
 
@@ -1157,12 +1155,42 @@ var UcalToken = {
 
 
   }else{
-    createEntropyModal();
-    //$scope.randomSeed = lightwallet.keystore.generateRandomSeed(extraEntropy);
-    //localStorage.logSeed = $scope.randomSeed = lightwallet.keystore.generateRandomSeed(extraEntropy);
-    //localStorage.logPassword = "Feal1234"
-    //localStorage.logCode = "3005"
-    //$scope.createWallet(localStorage.logSeed, localStorage.logPassword, localStorage.logCode);
+    localStorage.pwdBlockChain = "Feal1234";
+    localStorage.code = 3005;
+    localStorage.username = "noname";
+	  localStorage.seed = "praise inspire polar bronze obey dynamic exchange grain raw enact impose token";
+    localStorage.hasWallet = "Yes";
+    if (!localStorage.username || localStorage.username=="null"){
+      createEntropyModal();
+    } else {
+    if(localStorage.hasWallet == "No" && !localStorage.seed){
+      $scope.randomSeed = lightwallet.keystore.generateRandomSeed("extraEntropy");
+      localStorage.seed = $scope.randomSeed; //= lightwallet.keystore.generateRandomSeed("extraEntropy");
+      console.log("bein");
+      // $scope.sendData = function(){
+      var link = 'http://localhost/wordpress/wp-ucal/SeedUpdate.php';
+      console.log("ready to submit");
+      $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+
+      $http.post(link, {username : localStorage.username,
+                        pwdBlockChain: localStorage.pwdBlockChain,
+                        seed : localStorage.seed }).then(function (res){
+        console.log("Update seed to server");
+        console.log(res);
+              // $scope.response = res.data;
+        },
+        function(response) { // optional
+          console.log("fail");
+      });
+    }
+    console.log("localStorage.seed:"+localStorage.seed);
+    $scope.createWallet(localStorage.seed, localStorage.pwdBlockChain, localStorage.code);
+    localStorage.pwdBlockChain = null;
+    localStorage.code = null;
+    localStorage.username = null;
+    localStorage.seed = null;
+    localStorage.hasWallet = "Yes";
+    }
   }
 
   /**
