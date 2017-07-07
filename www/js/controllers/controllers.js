@@ -37,7 +37,7 @@ angular.module('leth.controllers', [])
     // console.log("Run in controller");
     console.log("$scope.listCoins.length:"+$scope.listCoins.length);
     if ($scope.listCoins.length==0){
-      var link = 'http://localhost/wordpress/wp-ucal/UcalContract.php';
+      var link = 'http://www.unicalcoin.it/wp-UCAL/UcalContract.php';
       console.log("ready to submit");
       $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
@@ -326,7 +326,7 @@ angular.module('leth.controllers', [])
     if($ionicHistory.currentTitle()=="Address")
       $scope.shareByChat(friend, $scope.param);
     // if($ionicHistory.currentTitle()=="LΞTH")
-    if($ionicHistory.currentTitle()=="ԱCAL")
+    if($ionicHistory.currentTitle()=="WAND")
       $scope.shareCustomToken(friend, $scope.param);
     if($ionicHistory.currentView().stateName == "tab.dappleth-run"){
       if($scope.param.action=="invite")
@@ -1155,11 +1155,6 @@ angular.module('leth.controllers', [])
 
 
   }else{
-    localStorage.pwdBlockChain = "Feal1234";
-    localStorage.code = 3005;
-    localStorage.username = "noname";
-	  localStorage.seed = "praise inspire polar bronze obey dynamic exchange grain raw enact impose token";
-    localStorage.hasWallet = "Yes";
     if (!localStorage.username || localStorage.username=="null"){
       createEntropyModal();
     } else {

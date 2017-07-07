@@ -125,13 +125,8 @@ angular.module('leth.controllers')
         // // var transactions = $scope.transactions;
         // console.log("transactions::::::::");
         // console.log($scope.transactions);
-        if(!$scope.transactions){
-          if (localStorage.Transactions != undefined && localStorage.Transactions[0] !="{") {
-            $scope.transactions = JSON.parse(localStorage.Transactions);
-          } else {
-            $scope.transactions = [];
-          }
-        }
+
+        $scope.transactions = Transactions.all();
         $scope.pendingBalance = 0;
         for (var t in $scope.transactions){
           if (!$scope.transactions[t].block){
