@@ -285,6 +285,43 @@ angular.module('leth.services', [])
       }
       return 10600200000000;
     },
+    getUCALNotification: function (contract, lastestIndex, userAddress) {//return a list of transaction from lastest index of userAddress
+      var noti = null;//contract.lsNoti(lastestIndex);
+      var lsTx = [];
+      var i = 0;
+      // console.log("noti");
+      // console.log(noti);
+      while (i>-1){
+        // console.log(lastestIndex+":");
+        // console.log(noti);
+        try{
+          noti = contract.lsNoti(lastestIndex);
+          if (noti[1]==userAddress){
+            var newT = {from: noti[0], to: noti[1], id: "Incomming messages", value: noti[2], unit: 1, symbol: "Ա", unitRound: 6, time: noti[3], type:"In", message : noti[4], block : "blockNumber"};
+            console.log(newT);
+            newT.value = web3.toDecimal(web3.toHex(newT.value)) / '1.0e6';
+            newT.time = web3.toDecimal(newT.time);
+            // console.log(newT);
+            lsTx[i++] = newT;
+          }
+          lastestIndex++;
+        }catch(e) {
+          i = -100;
+          break;
+        }
+      }
+      // console.log("lsTx");
+      // console.log(lsTx);
+      // console.log(lastestIndex);
+      if(lsTx.length == 0) {
+        return null;
+      };
+      var result =  {
+        lsTx : lsTx,
+        lastestIndex : lastestIndex
+      };
+      return result;
+    },
     transferUCALCoin: function (contract, nameSend, from, to, amount , ufee,  efee , msgText) {
       msgText = msgText ? msgText : "#";
       return $q(function (resolve, reject) {

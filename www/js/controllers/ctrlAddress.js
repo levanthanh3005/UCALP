@@ -6,7 +6,7 @@ angular.module('leth.controllers')
     $scope.inputMode = '';
     $scope.image = true;
     $scope.qrcodeString = AppService.account() + "#" + AppService.idkey();
-    
+
     $scope.listUnit = [
       {multiplier: "1.0e18", unitName: "Ether"},
       {multiplier: "1.0e15", unitName: "Finney"},
@@ -16,7 +16,7 @@ angular.module('leth.controllers')
     $scope.onAmountChange = function(amount){
       if($scope.amountPayment == "")
         $scope.qrcodeString = AppService.account() + "#" + AppService.idkey();
-  
+
       $scope.qrcodeString = AppService.account() + "#" + AppService.idkey() + '@' + amount;
     }
 
@@ -34,7 +34,7 @@ angular.module('leth.controllers')
     $scope.shareBySms = function() {
       var content = "My address is ethereum://" + $scope.qrcodeString ;
       var phonenumber="";
-      document.addEventListener("deviceready", function () {      
+      document.addEventListener("deviceready", function () {
         $cordovaContacts.pickContact().then(function (contactPicked) {
           phonenumber = contactPicked.phoneNumbers[0].value;
 
@@ -57,17 +57,17 @@ angular.module('leth.controllers')
           });
 
         });
-      }, false);      
+      }, false);
     }
 
     $scope.shareByEmail = function(){
       var imgQrcode = angular.element(document.querySelector('qr > img')).attr('ng-src');
       //I need to remove header of bitestream and replace with the new one
       var allegato = 'base64:qr.png//'+imgQrcode.replace('data:image/png;base64,','');
-     
+
       document.addEventListener("deviceready", function () {
         $cordovaEmailComposer.isAvailable().then(function() {
-        
+
           var emailOpts = {
             to: [''],
             attachments:[allegato],
@@ -85,11 +85,39 @@ angular.module('leth.controllers')
           console.log("cordovaEmailComposer not available");
           return;
         });
-      }, false);         
+      }, false);
     }
 
     $scope.copyAddr = function(){
-      document.addEventListener("deviceready", function () {  
+      console.log("Copy");
+      try{
+        let t = document.createElement('textarea')
+        t.id = 't'
+        // Optional step to make less noise in the page, if any!
+        t.style.height = 0;
+        // You have to append it to your page somewhere, I chose <body>
+        document.body.appendChild(t);
+        // Copy whatever is in your div to our new textarea
+        t.value = document.getElementById('address').innerHTML;
+        // Now copy whatever inside the textarea to clipboard
+        let selector = document.querySelector('#t');
+        selector.select();
+        document.execCommand('copy');
+        // Remove the textarea
+        document.body.removeChild(t);
+        var alertPopup = $ionicPopup.alert({
+           title: 'Copy Address',
+           template: 'Address is in clipboard!'
+         });
+
+         alertPopup.then(function(res) {
+           console.log('address copied in clipboard');
+         });
+      } catch (e) {
+        console.log("Error when copy");
+      }
+
+      document.addEventListener("deviceready", function () {
         $cordovaClipboard
         .copy($scope.qrcodeString)
         .then(function () {
@@ -107,6 +135,6 @@ angular.module('leth.controllers')
           // error
           console.log('Copy error');
         });
-      }, false);         
+      }, false);
     }
   })

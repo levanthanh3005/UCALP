@@ -6,10 +6,12 @@ angular.module('leth.services')
     all: function () {
       if (localStorage.Transactions != undefined && localStorage.Transactions[0] !="{") {
         transactions = JSON.parse(localStorage.Transactions);
+        if(!transactions) {
+          transactions = [];
+        }
       } else {
         transactions = [];
       }
-  
       return transactions;
     },
     delAll: function () {

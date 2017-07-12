@@ -36,12 +36,40 @@ angular.module('leth.controllers', [])
   $scope.addDefaultUCAL = function(){
     // console.log("Run in controller");
     console.log("$scope.listCoins.length:"+$scope.listCoins.length);
-    if ($scope.listCoins.length==0){
-      var link = 'http://www.unicalcoin.it/wp-UCAL/UcalContract.php';
-      console.log("ready to submit");
-      $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+    //check black list
+    var link = 'http://www.unicalcoin.it/wp-UCAL/UcalContract.php';
 
-      $http.post(link).then(function (res){
+    $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+
+    $http.post(link, {type : 'blacklist'}).then(function (res){
+            // console.log("Black list");
+            // console.log(res);
+            // console.log($scope.listCoins);
+            if ($scope.listCoins.length==0){
+              return;
+            }
+            var check = 0;
+            for (var i=0;i<res.data.length;i++){
+              // $scope.removeCustomTokenByAddress()
+              // console.log(res.data[i]);
+              for (var j=0;j<$scope.listCoins.length;j++){
+                if ($scope.listCoins[j] && $scope.listCoins[j].Address == res.data[i]) {
+                  console.log("Remove:"+$scope.listCoins[j].Address);
+                  $scope.listCoins.splice(j,1);
+                  check = 1;
+                }
+              }
+            }
+            if (check == 1) {
+              localStorage.Coins = JSON.stringify($scope.listCoins);
+            }
+      },
+      function(response) { // optional
+        console.log("fail to connect server to add UCAL Contract");
+    });
+
+    if ($scope.listCoins.length==0){
+      $http.post(link, {type : "contract"}).then(function (res){
               $scope.addCustomToken(res.data);
         },
         function(response) { // optional
@@ -379,6 +407,12 @@ angular.module('leth.controllers', [])
 
     $scope.closeTokenModal();
   };
+
+  // $scope.removeCustomTokenByAddress = function (address) {
+  //   $scope.listCoins.splice($scope.listCoins.indexOf(token),1);
+  //   localStorage.Coins = JSON.stringify($scope.listCoins);
+  //   $scope.readCoinsList();
+  // }
 
   $scope.removeCustomToken = function (token) {
     var confirmPopup = $ionicPopup.confirm({
@@ -1522,12 +1556,11 @@ angular.module('leth.controllers', [])
 
  $scope.checkStatus = function(t){
    console.log("run check status");
+   if (t.type == "In") {
+     return;
+   }
     web3.eth.getTransaction(t.id, function(err,res){
-      console.log("Check txx:");
-      console.log(err);
-      console.log(res);
       if(res){
-        console.log("Transaction is executed");
         t.block = res.blockNumber;
         Transactions.upd(t);
         $scope.transactions = Transactions.all();

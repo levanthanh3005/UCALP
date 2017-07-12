@@ -148,11 +148,27 @@ angular.module('leth.controllers')
             });
           }
         }
-        // console.log("pendingAmount:"+$scope.pendingBalance);
-        // if(localStorage.Transactions != JSON.stringify($scope.transactions)){
-        //   console.log("Update list transaction");
-        //   localStorage.Transactions = JSON.stringify($scope.transactions);
-        // }
+        //Check new transaction come:
+        if (!localStorage.lastestNotiIndex || localStorage.lastestNotiIndex < 0) {
+          localStorage.lastestNotiIndex = 0;
+        }
+        var newNoti = AppService.getUCALNotification($scope.contractCoin,localStorage.lastestNotiIndex,$scope.account);
+        if(newNoti) {
+          localStorage.lastestNotiIndex = newNoti.lastestIndex;
+          // console.log("$scope.transactions:"+$scope.transactions);
+          for (var t in newNoti.lsTx){
+            $scope.transactions = Transactions.add(newNoti.lsTx[t]);
+            var time =new Date(newNoti.lsTx[t].time).toString("yyyy-MM-dd HH:mm:ss");
+            var showNoti = $ionicPopup.alert({
+              title: 'You receive a new transaction:',
+              template: "From: "+newNoti.lsTx[t].from+" <br/> Amount: "+newNoti.lsTx[t].value+"<br/> Messages: "+newNoti.lsTx[t].message
+            });
+            showNoti.then(function (res) {
+              $ionicLoading.hide();
+            });
+          }
+          // localStorage.Transactions = JSON.stringify($scope.transactions);
+        }
       }
       if(oldBalance != $scope.balance){
         console.log("Updated =>>>>>>>>>>>>>>>>>>>"+oldBalance+"<vs>"+$scope.balance);

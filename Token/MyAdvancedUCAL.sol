@@ -132,9 +132,9 @@ contract UCAL is owned, Bacini {
     ) Bacini (initialSupply, tokenName, decimalUnits, tokenSymbol) {}
 
 	function initialize() onlyOwner {
-		balanceOf[msg.sender] = 1000000000;              // Give the creator all initial tokens
+		//balanceOf[msg.sender] = 1000000000;              // Give the creator all initial tokens
 		//balanceOf[0xaecd3a931752259cc6587a7591c6e800e49b335b] = 1000000000;
-        totalSupply = 1000000000;                        // Update total supply
+        //totalSupply = 1000000000;                        // Update total supply
         name = "UCAL";                                   // Set the name for display purposes
         symbol = "Ա";                               // Set the symbol for display purposes
         decimals = 6;                            // Amount of decimals for display purposes
