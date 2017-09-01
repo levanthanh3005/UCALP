@@ -319,11 +319,23 @@ angular.module('leth.controllers')
         console.log("inside:"+value+" vs "+unit + " vs "+ufee);
         var totalSend = value+ufee;
         var balanceNow = parseFloat($scope.balance) * unit;
-        console.log("Balance:"+balanceNow+" vs "+totalSend+"  >>"+(balanceNow>=totalSend) );
+        console.log("Balance:"+balanceNow+" vs "+totalSend+"  >>"+(balanceNow>=totalSend)+ " efee:"+($scope.fee/1.0e18)+ " "+AppService.balance(1.0e18));
         if (balanceNow<totalSend) {
           var alertPopup = $ionicPopup.alert({
             title: 'Error',
             template: 'Noooooooooooooooooooooooo out of total balance'
+
+          });
+          alertPopup.then(function (res) {
+            $ionicLoading.hide();
+            // console.log(err);
+          });
+          return;
+        }
+        if ($scope.fee/1.0e18 > AppService.balance(1.0e18)) {
+          var alertPopup = $ionicPopup.alert({
+            title: 'Error',
+            template: 'Oh no, you need more eth to execute the transaction'
 
           });
           alertPopup.then(function (res) {
